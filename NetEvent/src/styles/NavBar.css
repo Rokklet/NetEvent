@@ -1,0 +1,27 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #001529;
+  padding: 0 24px;
+}
+
+.navbar-title {
+  color: #fff !important;
+  margin: 0;
+  cursor: pointer;
+}
+
+.navbar-title:hover {
+  color: #1890ff !important;
+  transition: color 0.2s;
+}
+
+.navbar-avatar {
+  cursor: pointer;
+}
+
+.navbar-avatar:hover {
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
