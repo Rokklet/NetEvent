@@ -12,7 +12,6 @@ const App: React.FC = () => {
       <Content style={{ padding: "24px" }}>
         <AppRouter />
       </Content>
-      
     </Layout>
   );
 };
