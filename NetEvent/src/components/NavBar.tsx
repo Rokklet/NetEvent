@@ -3,7 +3,7 @@ import { Layout, Typography, Avatar, Dropdown } from "antd";
 import type { MenuProps } from "antd";
 import { UserOutlined, SettingOutlined, LogoutOutlined } from "@ant-design/icons";
 // import { useNavigate } from "react-router-dom";
-import "../styles/NavBar.css";
+import "../styles/global.css";
 
 const { Header } = Layout;
 const { Title } = Typography;
@@ -36,6 +36,7 @@ const Navbar: React.FC = () => {
       danger: true,
       onClick:() => window.location.href = "/login",
     },
+    
   ];
   return (
     
