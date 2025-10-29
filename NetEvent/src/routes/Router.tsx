@@ -1,27 +1,26 @@
 import React from "react";
-import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../pages/login";
 import Home from "../pages/Home";
 import Register from "../pages/Register";
 import RegisterParticipante from "../pages/RegisterParticipante";
 import RegisterOrganizador from "../pages/RegisterOrganizador";
-
+import Perfil from "../pages/Perfil";
+import LayoutSelector from "../components/LayoutSelector";
 
 const AppRouter: React.FC = () => (
-     <BrowserRouter>
-        <Routes>
-            {/*Rutas*/}
-            <Route path="/login" element={<Login />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/register" element={<Register />}/>
-            <Route path="/registerParticipante" element={<RegisterParticipante />}/>
-            <Route path="/registerOrganizador" element={<RegisterOrganizador />}/>
-            
-            {/*Redirects*/}
-            <Route path="/" element={<Navigate to="/home" replace/>} />
+  <Routes>
+    {/* Rutas */}
+    <Route path="/home" element={<LayoutSelector><Home /></LayoutSelector>} />
+    <Route path="/login" element={<LayoutSelector><Login /></LayoutSelector>} />
+    <Route path="/register" element={<LayoutSelector><Register /></LayoutSelector>} />
+    <Route path="/registerParticipante" element={<LayoutSelector><RegisterParticipante /></LayoutSelector>} />
+    <Route path="/registerOrganizador" element={<LayoutSelector><RegisterOrganizador /></LayoutSelector>} />
+    <Route path="/perfil" element={<LayoutSelector><Perfil /></LayoutSelector>} />
 
-        </Routes>
-     </BrowserRouter>
+    {/* Redirección */}
+    <Route path="/" element={<Navigate to="/home" replace />} />
+  </Routes>
 );
 
 export default AppRouter;

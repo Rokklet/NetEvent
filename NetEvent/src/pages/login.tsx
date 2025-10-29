@@ -1,14 +1,12 @@
 import React from "react";
 import { Card, Form, Input, Button, Typography } from "antd";
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
-import MainLayout from "../layouts/MainLayout"
 import "../styles/global.css"
 
 const { Title } = Typography;
 
 const Login: React.FC = () => {
   return (
-    <MainLayout>
     <div className="login-container">
       <Card className="login-card">
         <div className="login-title">
@@ -47,7 +45,6 @@ const Login: React.FC = () => {
         </Form>
       </Card>
     </div>
-  </MainLayout>
   );
 };
 

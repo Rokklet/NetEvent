@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Card, Divider , Col, Button, Typography, Space, Form, Input, Upload, Avatar } from "antd";
-import { UserOutlined, UploadOutlined, MailOutlined, LockOutlined } from "@ant-design/icons";
+import { Card, Divider , Col, Button, Typography,  Form, Input, Upload, Avatar } from "antd";
+import { UserOutlined, UploadOutlined } from "@ant-design/icons";
 import type { UploadChangeParam } from "antd/es/upload";
 import MainLayout from "../layouts/MainLayout"
 import "../styles/global.css"
@@ -34,26 +34,32 @@ const RegisterOrganizador: React.FC = () => {
 
                 <Form layout="vertical">
                      
-                     <div>
+                    <div>
                         <Avatar
                         size={100}
                         src={imageUrl || undefined}
                         icon={!imageUrl && <UserOutlined />}
                         className="avatar-preview"
                         />
-                        <Upload
-                        showUploadList={false}
-                        beforeUpload={() => false} // Evita subir al servidor por ahora
-                        onChange={handleChange}
-                        >
-                        <Button icon={<UploadOutlined />}>Subir foto</Button>
-                        </Upload>
+                        <Col>
+                            <Upload
+                                showUploadList={false}
+                                beforeUpload={() => false} // Evita subir al servidor por ahora
+                                onChange={handleChange}
+                                >
+                                <Button icon={<UploadOutlined />}>Subir foto</Button>
+                            </Upload>
+                        </Col>
+                        
                     </div>
 
                     <Form.Item label="Nombre completo">
                         <Input prefix={<UserOutlined />} placeholder="NetEvent" />
                     </Form.Item>
-                
+
+                    <Form.Item label="Descripción">
+                        <Input prefix={<UserOutlined />} placeholder="Descripción de tu empresa" />
+                    </Form.Item>
 
                     <Form.Item label="Corre Electronico">
                         <Input prefix={<UserOutlined />} placeholder="Contacto@netevent.com.ar" />
@@ -62,6 +68,10 @@ const RegisterOrganizador: React.FC = () => {
                     <Form.Item label="Contraseña">
                         <Input prefix={<UserOutlined />} placeholder="*********" />
                     </Form.Item>
+
+                    <Button type="primary" size="large" block onClick={() => window.location.href = "/home"}>
+                        Registrate
+                    </Button>
 
                 </Form>
 
