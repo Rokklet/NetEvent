@@ -7,6 +7,7 @@ import RegisterParticipante from "../pages/RegisterParticipante";
 import RegisterOrganizador from "../pages/RegisterOrganizador";
 import Perfil from "../pages/Perfil";
 import LayoutSelector from "../components/LayoutSelector";
+import PublicarEvento from "../pages/PublicarEvento";
 
 const AppRouter: React.FC = () => (
   <Routes>
@@ -17,6 +18,7 @@ const AppRouter: React.FC = () => (
     <Route path="/registerParticipante" element={<LayoutSelector><RegisterParticipante /></LayoutSelector>} />
     <Route path="/registerOrganizador" element={<LayoutSelector><RegisterOrganizador /></LayoutSelector>} />
     <Route path="/perfil" element={<LayoutSelector><Perfil /></LayoutSelector>} />
+    <Route path="/nuevoevento" element={<LayoutSelector><PublicarEvento /></LayoutSelector>}/>
 
     {/* Redirección */}
     <Route path="/" element={<Navigate to="/home" replace />} />

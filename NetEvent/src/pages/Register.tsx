@@ -1,44 +1,40 @@
 import React from "react";
 import { Card, Divider , Col, Button, Typography, Space } from "antd";
-
-import MainLayout from "../layouts/MainLayout"
 import "../styles/global.css"
 
 const { Title } = Typography;
 
 const Register: React.FC = () => {
     return(
-        <MainLayout>
-            <div className="login-container">
-                <Card className="login-card">
-                    <div>
-                        <Title level={3}>Registrate</Title>
-                        <p className="login-subtitle">Bienvenido de nuevo</p>
-                    </div>
+        <div className="login-container">
+            <Card className="login-card">
+                <div>
+                    <Title level={3}>Registrate</Title>
+                    <p className="login-subtitle">Bienvenido de nuevo</p>
+                </div>
 
-                    <Col>
-                        <Space direction="vertical">
+                <Col>
+                    <Space direction="vertical">
 
-                            <p>Si usted o su compañia desea realizar un evento, incribase como un organizador 
-                                y atraiga a los entusiastas que desea</p>
+                        <p>Si usted o su compañia desea realizar un evento, incribase como un organizador 
+                            y atraiga a los entusiastas que desea</p>
 
-                            <Button type="primary" onClick={() => window.location.href = "/registerOrganizador"}>
-                                Organizador
-                            </Button>
+                        <Button type="primary" onClick={() => window.location.href = "/registerOrganizador"}>
+                            Organizador
+                        </Button>
 
-                            <Divider />
+                        <Divider />
 
-                            <p>Si eres un apacionado del Networking y quieres estar al día con las últimas novedades, 
-                                incribete como un participante y anotate en todas las charlas para estar al día</p>
+                        <p>Si eres un apacionado del Networking y quieres estar al día con las últimas novedades, 
+                            incribete como un participante y anotate en todas las charlas para estar al día</p>
 
-                            <Button type="primary" onClick={() => window.location.href = "/registerParticipante"}>
-                                Participante
-                            </Button>
-                        </Space>
-                    </Col>
-                </Card>
-            </div>
-        </MainLayout>
+                        <Button type="primary" onClick={() => window.location.href = "/registerParticipante"}>
+                            Participante
+                        </Button>
+                    </Space>
+                </Col>
+            </Card>
+        </div>
     );
 };
 

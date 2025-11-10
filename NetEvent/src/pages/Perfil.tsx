@@ -1,37 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { Card, Descriptions, Spin } from "antd";
-import  perfilMock  from "../UsuarioTemporal/mockData";
-
-interface PerfilData {
-  nombre: string;
-  correo: string;
-  role: string;
-}
+import React from "react";
+import Basicos from "../components/perfil/Basicos";
+import { useAuth } from "../context/AuthContext";
+import MisEventosParticipante from "../components/perfil/MisEventosParticipante";
+import MisEventosOrganizador from "../components/perfil/MisEventosOrganizador";
 
 const Perfil: React.FC = () => {
-    
-  const [perfil, setPerfil] = useState<PerfilData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulamos fetch desde backend
-    const timeout = setTimeout(() => {
-      setPerfil(perfilMock);
-      setLoading(false);
-    }, 500); // medio segundo de "latencia"
-    return () => clearTimeout(timeout);
-  }, []);
-
-  if (loading) return <Spin style={{ display: "block", margin: "4rem auto" }} />;
+  const { user } = useAuth();
+  const role = user?.role || "guest";
 
   return (
-    <Card title="Mi Perfil">
-      <Descriptions column={1}>
-        <Descriptions.Item label="Nombre">{perfil?.nombre}</Descriptions.Item>
-        <Descriptions.Item label="Correo">{perfil?.correo}</Descriptions.Item>
-        <Descriptions.Item label="Rol">{perfil?.role}</Descriptions.Item>
-      </Descriptions>
-    </Card>
+    <>
+    <Basicos />
+
+    {role === "participant" && (
+      <>
+        <MisEventosParticipante />
+      </>
+    )}
+
+    {role === "organizer" && (
+       <MisEventosOrganizador />
+    )}
+    
+    </>
   );
 };
 

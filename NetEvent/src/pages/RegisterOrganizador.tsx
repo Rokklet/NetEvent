@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Card, Divider , Col, Button, Typography,  Form, Input, Upload, Avatar } from "antd";
 import { UserOutlined, UploadOutlined } from "@ant-design/icons";
 import type { UploadChangeParam } from "antd/es/upload";
-import MainLayout from "../layouts/MainLayout"
 import "../styles/global.css"
 
 const { Title } = Typography;
@@ -23,61 +22,61 @@ const RegisterOrganizador: React.FC = () => {
     };
     
     return  (
-        <MainLayout>
-            <Card>
+        
+        <Card>
+            <div>
+                <Title level={3}>Registrate</Title>
+                <p>Complete sus datos para regsitrarse</p>
+            </div>
+
+            <Divider/>
+
+            <Form layout="vertical">
+                    
                 <div>
-                    <Title level={3}>Registrate</Title>
-                    <p>Complete sus datos para regsitrarse</p>
+                    <Avatar
+                    size={100}
+                    src={imageUrl || undefined}
+                    icon={!imageUrl && <UserOutlined />}
+                    className="avatar-preview"
+                    />
+                    <Col>
+                        <Upload
+                            showUploadList={false}
+                            beforeUpload={() => false} // Evita subir al servidor por ahora
+                            onChange={handleChange}
+                            >
+                            <Button icon={<UploadOutlined />}>Subir foto</Button>
+                        </Upload>
+                    </Col>
+                    
                 </div>
 
-                <Divider/>
+                <Form.Item label="Nombre completo">
+                    <Input prefix={<UserOutlined />} placeholder="NetEvent" />
+                </Form.Item>
 
-                <Form layout="vertical">
-                     
-                    <div>
-                        <Avatar
-                        size={100}
-                        src={imageUrl || undefined}
-                        icon={!imageUrl && <UserOutlined />}
-                        className="avatar-preview"
-                        />
-                        <Col>
-                            <Upload
-                                showUploadList={false}
-                                beforeUpload={() => false} // Evita subir al servidor por ahora
-                                onChange={handleChange}
-                                >
-                                <Button icon={<UploadOutlined />}>Subir foto</Button>
-                            </Upload>
-                        </Col>
-                        
-                    </div>
+                <Form.Item label="Descripción">
+                    <Input prefix={<UserOutlined />} placeholder="Descripción de tu empresa" />
+                </Form.Item>
 
-                    <Form.Item label="Nombre completo">
-                        <Input prefix={<UserOutlined />} placeholder="NetEvent" />
-                    </Form.Item>
+                <Form.Item label="Corre Electronico">
+                    <Input prefix={<UserOutlined />} placeholder="Contacto@netevent.com.ar" />
+                </Form.Item>
+            
+                <Form.Item label="Contraseña">
+                    <Input prefix={<UserOutlined />} placeholder="*********" />
+                </Form.Item>
 
-                    <Form.Item label="Descripción">
-                        <Input prefix={<UserOutlined />} placeholder="Descripción de tu empresa" />
-                    </Form.Item>
+                <Button type="primary" size="large" block onClick={() => window.location.href = "/home"}>
+                    Registrate
+                </Button>
 
-                    <Form.Item label="Corre Electronico">
-                        <Input prefix={<UserOutlined />} placeholder="Contacto@netevent.com.ar" />
-                    </Form.Item>
-                
-                    <Form.Item label="Contraseña">
-                        <Input prefix={<UserOutlined />} placeholder="*********" />
-                    </Form.Item>
+            </Form>
 
-                    <Button type="primary" size="large" block onClick={() => window.location.href = "/home"}>
-                        Registrate
-                    </Button>
-
-                </Form>
-
-                
-            </Card>
-        </MainLayout>
+            
+        </Card>
+    
     );
 };
 

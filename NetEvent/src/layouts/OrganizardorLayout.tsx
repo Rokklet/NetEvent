@@ -1,29 +1,18 @@
-import { Layout, Menu, Button } from "antd";
-import { CalendarOutlined, UserOutlined } from "@ant-design/icons";
+import { Layout} from "antd";
 import "../styles/global.css";
+import NavbarOrganizador from "../components/NavBarOrganizador";
 
-const { Sider, Content } = Layout;
+const {Content, Footer } = Layout;
 
 const OrganizadorLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Layout style={{ minHeight: "100vh" }}>
-    <Sider theme="dark">
-      <Menu
-        mode="inline"
-        items={[
-          { key: "1", icon: <CalendarOutlined />, label: "Mis Eventos", onClick: () => window.location.href = "/perfil", },
-          { key: "2", icon: <UserOutlined />, label: "Perfil" },
-        ]}
-        
-      />
-
-        <Button type="primary" onClick={() => window.location.href = "/registerOrganizador"}>
-                                Organizador
-        </Button>
-
-    </Sider>
+    <NavbarOrganizador />
     <Layout>
       <Content style={{ margin: "24px" }}>{children}</Content>
     </Layout>
+    <Footer style={{ textAlign: "center", color: "#888" }}>
+        © {new Date().getFullYear()} NetEvent - Todos los derechos reservados
+      </Footer>
   </Layout>
 );
 
