@@ -1,13 +1,17 @@
 import React from "react";
-import { Layout, Typography, Avatar, Dropdown} from "antd";
+import { Layout, Typography, Avatar, Dropdown, Descriptions} from "antd";
 import type { MenuProps } from "antd";
 import { UserOutlined, LogoutOutlined,  HomeOutlined  } from "@ant-design/icons";
 import "../styles/global.css";
+import { useAuth } from "../context/AuthContext";
 
 const { Header } = Layout;
 const { Title } = Typography;
 
 const NavbarOrganizador: React.FC = () => {
+
+    const { user, logout } = useAuth();
+
     const items: MenuProps["items"] = [
     
       {
@@ -33,7 +37,7 @@ const NavbarOrganizador: React.FC = () => {
       label: "Cerrar Sesion",
       icon: <LogoutOutlined />,
       danger: true,
-      onClick:() => window.location.href = "/home",
+      onClick: logout,
     },
     
   ];
@@ -48,10 +52,16 @@ const NavbarOrganizador: React.FC = () => {
       >
         NetEvent
       </Title>
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
 
-        <Dropdown menu={{ items }} placement="bottomRight" arrow>
+          <Descriptions.Item label="Nombre">{user?.nombre}</Descriptions.Item>
+
+          <Dropdown menu={{ items }} placement="bottomRight" arrow>
             <Avatar icon={<UserOutlined />} className="navbar-avatar" />
         </Dropdown>
+
+        </div>
+        
     
     </Header>
   );

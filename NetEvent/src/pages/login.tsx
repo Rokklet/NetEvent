@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, Form, Input, Button, Typography, message } from "antd";
+import { Card, Form, Input, Button, Typography, message, Divider } from "antd";
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
 import "../styles/global.css"
 
@@ -68,13 +68,19 @@ const Login: React.FC = () => {
             <Input.Password size="large" prefix={<LockOutlined />} placeholder="••••••" />
           </Form.Item>
 
+          <Divider />
+
           <Button type="primary" size="large" htmlType="submit" block loading={loading}>
             Ingresar
           </Button>
+
+          <Divider />
         
           <Button type="primary" size="large" block onClick={() => window.location.href = "/register"}>
             Registrate
           </Button>
+
+          <Divider />
 
           <div className="login-forgot">
             <a href="#">¿Olvidaste tu contraseña?</a>

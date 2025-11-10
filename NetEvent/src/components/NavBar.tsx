@@ -14,7 +14,7 @@ const Navbar: React.FC = () => {
       key: "home",
       label: "Home",
       icon: <UserOutlined />,
-      onClick: () => window.location.href = "/perfil",
+      onClick: () => window.location.href = "/home",
     },
     {
       type: "divider",

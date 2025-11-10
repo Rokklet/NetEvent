@@ -1,13 +1,19 @@
 import React from "react";
-import { Layout, Typography, Avatar, Dropdown, Button } from "antd";
+import { Layout, Typography, Avatar, Dropdown, Button, Descriptions } from "antd";
 import type { MenuProps } from "antd";
 import { UserOutlined, LogoutOutlined, PlusOutlined, HomeOutlined  } from "@ant-design/icons";
 import "../styles/global.css";
+import { useAuth } from "../context/AuthContext";
 
 const { Header } = Layout;
 const { Title } = Typography;
 
+
+
 const NavbarOrganizador: React.FC = () => {
+
+  const { user, logout } = useAuth();
+  
     const items: MenuProps["items"] = [
     
       {
@@ -33,10 +39,13 @@ const NavbarOrganizador: React.FC = () => {
       label: "Cerrar Sesion",
       icon: <LogoutOutlined />,
       danger: true,
-      onClick:() => window.location.href = "/home",
+      onClick: logout,
     },
+
+
     
   ];
+
   return (
     
      <Header className="navbar">
@@ -57,6 +66,8 @@ const NavbarOrganizador: React.FC = () => {
           style={{ backgroundColor: "#000c1eff", border: "none" }}
           onClick={() => window.location.href = "/nuevoevento"}
         >Nuevo Evento</Button>
+
+        <Descriptions.Item className="navbar-title">{user?.nombre}</Descriptions.Item>
 
         <Dropdown menu={{ items }} placement="bottomRight" arrow>
             <Avatar icon={<UserOutlined />} className="navbar-avatar" />

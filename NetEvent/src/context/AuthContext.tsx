@@ -1,17 +1,18 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import perfilMock from "../UsuarioTemporal/mockData";
+
 
 export type Role = "organizer" | "participant" | "guest";
 
 interface User {
   nombre: string;
-  correo: string;
+  correo?: string;
   role: Role;
 }
 
 interface AuthContextType {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,11 +22,25 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   
 
   useEffect(() => {
-    const timeout = setTimeout(() => setUser(perfilMock), 500);
-    return () => clearTimeout(timeout);
+    const nombre = localStorage.getItem("nombre");
+    const role = (localStorage.getItem("role") as Role) || "guest";
+
+    if (nombre && role) {
+      setUser({ nombre, role });
+    }
   }, []);
 
-  return <AuthContext.Provider value={{ user, setUser }}>{children}</AuthContext.Provider>;
+  const logout = () => {
+    localStorage.clear();
+    setUser(null);
+    window.location.href = "/login";
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, setUser, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 const useAuth = () => {

@@ -1,77 +1,118 @@
 import React, { useState } from "react";
-import { Card, Divider , Col, Button, Typography,  Form, Input, Upload, Avatar } from "antd";
-import { UserOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+  Card,
+  Divider,
+  Col,
+  Button,
+  Typography,
+  Form,
+  Input,
+  Upload,
+  Avatar,
+  message,
+} from "antd";
+import { UserOutlined, UploadOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 import type { UploadChangeParam } from "antd/es/upload";
-import "../styles/global.css"
+import "../styles/global.css";
 
 const { Title } = Typography;
 
 const RegisterParticipante: React.FC = () => {
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-     const [imageUrl, setImageUrl] = useState<string | null>(null);
-    
-        //Carga local de foto de perfil
-    
-        const handleChange = (info: UploadChangeParam) => {
-            const file = info.file.originFileObj;
-            if (file) {
-            const reader = new FileReader();
-            reader.onload = () => setImageUrl(reader.result as string);
-            reader.readAsDataURL(file);
-            }
-        };
-    
-    return (
-    
-        <Card>
-            <div>
-                <Title level={3}>Registrate</Title>
-                <p>Complete con sus datos para regsitrarse</p>
-            </div>
+  // Carga local de foto de perfil (solo visual, todavía no se guarda en backend)
+  const handleChange = (info: UploadChangeParam) => {
+    const file = info.file.originFileObj;
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setImageUrl(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
 
-            <Divider/>
+  const onFinish = async (values: { nombre: string; correo: string; password: string }) => {
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...values, role: "participant" }),
+      });
 
-            <Form layout="vertical">
-                    
-                <div>
-                    <Avatar
-                    size={100}
-                    src={imageUrl || undefined}
-                    icon={!imageUrl && <UserOutlined />}
-                    className="avatar-preview"
-                    />
-                    <Col>
-                        <Upload
-                            showUploadList={false}
-                            beforeUpload={() => false} // Evita subir al servidor por ahora
-                            onChange={handleChange}
-                            >
-                            <Button icon={<UploadOutlined />}>Subir foto</Button>
-                        </Upload>
-                    </Col>
-                    
-                </div>
+      const data = await response.json();
 
-                <Form.Item label="Nombre completo">
-                    <Input prefix={<UserOutlined />} placeholder="Juan Carlos Lopez" />
-                </Form.Item>
+      if (!response.ok) throw new Error(data.message || "Error al registrarse");
 
-                <Form.Item label="Corre Electronico">
-                    <Input prefix={<UserOutlined />} placeholder="Contacto@netevent.com.ar" />
-                </Form.Item>
-            
-                <Form.Item label="Contraseña">
-                    <Input prefix={<UserOutlined />} placeholder="*********" />
-                </Form.Item>
+      message.success("Registro exitoso. Ahora puedes iniciar sesión.");
+      window.location.href = "/login";
+    } catch (error: any) {
+      message.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                <Button type="primary" size="large" block onClick={() => window.location.href = "/home"}>
-                    Registrate
-                </Button>
+  return (
+    <Card className="register-card">
+      <div>
+        <Title level={3}>Registrate como Participante</Title>
+        <p>Completa tus datos para crear tu cuenta</p>
+      </div>
 
-            </Form>
+      <Divider />
 
-        </Card>
-    );
+      <Form layout="vertical" onFinish={onFinish}>
+        <div style={{ textAlign: "center", marginBottom: 16 }}>
+          <Avatar
+            size={100}
+            src={imageUrl || undefined}
+            icon={!imageUrl && <UserOutlined />}
+            className="avatar-preview"
+          />
+          <Col>
+            <Upload showUploadList={false} beforeUpload={() => false} onChange={handleChange}>
+              <Button icon={<UploadOutlined />}>Subir foto</Button>
+            </Upload>
+          </Col>
+        </div>
+
+        <Form.Item
+          label="Nombre completo"
+          name="nombre"
+          rules={[{ required: true, message: "Ingresa tu nombre completo" }]}
+        >
+          <Input prefix={<UserOutlined />} placeholder="Juan Carlos Lopez" />
+        </Form.Item>
+
+        <Form.Item
+          label="Correo electrónico"
+          name="correo"
+          rules={[{ required: true, message: "Ingresa tu correo" }]}
+        >
+          <Input prefix={<MailOutlined />} placeholder="contacto@empresa.com" />
+        </Form.Item>
+
+        <Form.Item
+          label="Contraseña"
+          name="password"
+          rules={[{ required: true, message: "Ingresa tu contraseña" }]}
+        >
+          <Input.Password prefix={<LockOutlined />} placeholder="*********" />
+        </Form.Item>
+
+        <Button
+          type="primary"
+          size="large"
+          block
+          htmlType="submit"
+          loading={loading}
+        >
+          Registrate
+        </Button>
+      </Form>
+    </Card>
+  );
 };
 
 export default RegisterParticipante;
