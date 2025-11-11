@@ -1,5 +1,5 @@
 import React, { useState }  from 'react';
-import { Input , Flex , Card, Row , Col , Divider , Typography, Button, Space} from 'antd';
+import { Input , Flex , Card, Row , Col , Divider , Typography, Button, Space, DatePicker} from 'antd';
 import NewEventCarousel from '../components/events/NewEventCarousel';
 import NewEventTagSelector from '../components/events/NewEventTagSelector';
 import NewEventNewCharla from '../components/events/NewEventNewCharla';
@@ -35,6 +35,8 @@ const PublicarEvento:React.FC = () => {
                 <Row>
                     <Col flex={3}>
                         <TextArea placeholder="Descripción" showCount maxLength={250} style={{ height: 150, resize: 'none' }}/>
+                        <br />
+                        <DatePicker renderExtraFooter={() => 'extra footer'} />
                     </Col>
                     <Divider type="vertical" />
                     <Col flex={2}>

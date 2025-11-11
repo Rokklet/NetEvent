@@ -28,7 +28,7 @@ const RegisterOrganizador: React.FC = () => {
       const response = await fetch("http://localhost:5000/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, role: "organizer" }),
+        body: JSON.stringify({ ...values, role: "organizer", foto:imageUrl, }),
       });
 
       const data = await response.json();
@@ -67,7 +67,7 @@ const RegisterOrganizador: React.FC = () => {
                     <Col>
                         <Upload
                             showUploadList={false}
-                            beforeUpload={() => false} // Evita subir al servidor por ahora
+                            beforeUpload={() => false} 
                             onChange={handleChange}
                             >
                             <Button icon={<UploadOutlined />}>Subir foto</Button>

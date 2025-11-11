@@ -1,0 +1,50 @@
+### REGISTRO DE USUARIO ORGANIZADOR
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "nombre": "Laura Eventos",
+  "correo": "laura@netevent.com",
+  "password": "1234",
+  "role": "organizer"
+}
+
+###
+
+### REGISTRO DE PARTICIPANTE
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "nombre": "Rocco",
+  "correo": "rocco@empresa.com",
+  "password": "abcd1234",
+  "role": "participant"
+}
+
+###
+
+### LOGIN ORGANIZADOR
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "correo": "laura@netevent.com",
+  "password": "1234"
+}
+
+###
+
+### LOGIN PARTICIPANTE
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "correo": "rocco@empresa.com",
+  "password": "abcd1234"
+}
+
+###
+
+### OBTENER EVENTOS (sin autenticación)
+GET http://localhost:5000/api/eventos

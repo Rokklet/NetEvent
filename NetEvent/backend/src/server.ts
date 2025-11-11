@@ -2,8 +2,8 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import eventoRoutes from "./routes/EventRoutes.js";
-import authRoutes from "./routes/authRoutes.js";
+import authRoutes from "./routes/authRoutes";
+import eventRoutes from "./routes/eventRoutes";
 
 dotenv.config();
 
@@ -12,13 +12,12 @@ app.use(cors());
 app.use(express.json());
 
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI!)
   .then(() => console.log("✅ Conectado a MongoDB"))
-  .catch((err) => console.error("❌ Error al conectar MongoDB:", err));
-
-app.use("/api/eventos", eventoRoutes);
+  .catch((err) => console.error("❌ Error de conexión:", err));
 
 app.use("/api/auth", authRoutes);
+app.use("/api/eventos", eventRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Servidor corriendo en puerto ${PORT}`));
