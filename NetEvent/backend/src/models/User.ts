@@ -17,8 +17,10 @@ const userSchema = new Schema<IUser>({
   password: { type: String, required: true },
   role: { type: String, enum: ["organizer", "participant"], default: "participant" },
   descripcion: { type: String },
-  foto: { type: String }
+  foto: { type: String },
 });
+
+/*Encriptado*/
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

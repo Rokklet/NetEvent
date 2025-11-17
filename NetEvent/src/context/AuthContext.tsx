@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-
 export type Role = "organizer" | "participant" | "guest";
 
 interface User {
   nombre: string;
   correo?: string;
   role: Role;
+  foto?: string;
 }
 
 interface AuthContextType {
@@ -19,16 +19,18 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  
 
   useEffect(() => {
     const nombre = localStorage.getItem("nombre");
+    const correo = localStorage.getItem("correo");
     const role = (localStorage.getItem("role") as Role) || "guest";
+    const foto = localStorage.getItem("foto");
 
     if (nombre && role) {
-      setUser({ nombre, role });
+      setUser({ nombre, correo: correo || "", role, foto: foto || "" });
     }
   }, []);
+
 
   const logout = () => {
     localStorage.clear();
@@ -48,5 +50,3 @@ export const useAuth = () => {
   if (!context) throw new Error("useAuth debe usarse dentro de AuthProvider");
   return context;
 };
-
-

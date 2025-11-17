@@ -1,38 +1,41 @@
 import React from "react";
-import { Tag , Card, Flex } from "antd";
+import { Card, Flex, Tag } from "antd";
 
-import "../../styles/global.css";
+interface Props {
+  onChange: (tags: string[]) => void;
+}
 
-const NewEventTagSelector: React.FC = () => {
+const NewEventTagSelector: React.FC<Props> = ({ onChange }) => {
+  const tagsData = ["Seguridad", "Networking", "Cloud", "Firewalls", "Dispositivos"];
 
-    const tagsData = ['Seguridad', 'Networking', 'Cloud', 'Firewalls', 'Dispositivos'];
+  const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
 
-    const [selectedTags, setSelectedTags] = React.useState<string[]>(['Movies']);
-    const handleChange = (tag: string, checked: boolean) => {
-        const nextSelectedTags = checked
-        ? [...selectedTags, tag]
-        : selectedTags.filter((t) => t !== tag);
-        console.log('You are interested in: ', nextSelectedTags);
-        setSelectedTags(nextSelectedTags);
-    };
+  const handleChange = (tag: string, checked: boolean) => {
+    const nextSelectedTags = checked
+      ? [...selectedTags, tag]
+      : selectedTags.filter((t) => t !== tag);
 
+    setSelectedTags(nextSelectedTags);
 
-    return(
-        <Card title="Categorias">
-            <Flex gap={4} wrap align="center">
-                {tagsData.map<React.ReactNode>((tag) => (
-                    <Tag.CheckableTag
-                    key={tag}
-                    checked={selectedTags.includes(tag)}
-                    onChange={(checked) => handleChange(tag, checked)}
-                    >
-                    {tag}
-                    </Tag.CheckableTag>
-                ))}
-            </Flex>
-        </Card>
-    );
+    // 🔥 Notificamos al componente padre
+    onChange(nextSelectedTags);
+  };
 
+  return (
+    <Card title="Categorías">
+      <Flex gap={4} wrap align="center">
+        {tagsData.map((tag) => (
+          <Tag.CheckableTag
+            key={tag}
+            checked={selectedTags.includes(tag)}
+            onChange={(checked) => handleChange(tag, checked)}
+          >
+            {tag}
+          </Tag.CheckableTag>
+        ))}
+      </Flex>
+    </Card>
+  );
 };
 
 export default NewEventTagSelector;

@@ -9,11 +9,13 @@ const router = express.Router();
 // Registro
 router.post("/register", async (req, res) => {
   try {
-    const { nombre, correo, password, role } = req.body;
+    const {  nombre, correo, password, role, descripcion, foto } = req.body;
+   
     const existing = await User.findOne({ correo });
     if (existing) return res.status(400).json({ message: "El correo ya está registrado" });
 
-    const user = new User({ nombre, correo, password, role });
+    const user = new User({ nombre, correo, password, role, descripcion, foto });
+    
     await user.save();
 
     res.status(201).json({ message: "Usuario creado con éxito" });

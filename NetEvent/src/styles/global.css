@@ -179,3 +179,9 @@ body {
 .event-carousel-add:hover {
   background-color: #165dcc;
 }
+
+.avatar-preview {
+  display: inline-block;
+  border: 2px solid #f0f0f0;
+  border-radius: 50%;
+}

@@ -11,13 +11,17 @@ const Basicos: React.FC = () => {
 return (
   <Card title="Mi Perfil">
     <Space direction="horizontal">
-        <Avatar size={128} icon={<UserOutlined />} />
-        
-            <Descriptions column={1}>
-                <Descriptions.Item label="Nombre">{user?.nombre}</Descriptions.Item>
-                <Descriptions.Item label="Correo">{user?.correo}</Descriptions.Item>
-                <Descriptions.Item label="Rol">{user?.role}</Descriptions.Item>
-            </Descriptions>
+        <Avatar
+          size={128}
+          src={user?.foto || undefined}
+          icon={!user?.foto && <UserOutlined />}
+        />
+    
+        <Descriptions column={1}>
+            <Descriptions.Item label="Nombre">{user?.nombre}</Descriptions.Item>
+            <Descriptions.Item label="Correo">{user?.correo}</Descriptions.Item>
+            <Descriptions.Item label="Rol">{user?.role}</Descriptions.Item>
+        </Descriptions>
 
     </Space>
   </Card>
