@@ -2,13 +2,11 @@ import React, { useState } from "react";
 import {
   Card,
   Divider,
-  Col,
   Button,
   Typography,
   message,
   Form,
   Input,
-  Upload,
   Avatar,
   Flex,
 } from "antd";
