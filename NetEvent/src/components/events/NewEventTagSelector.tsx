@@ -17,7 +17,6 @@ const NewEventTagSelector: React.FC<Props> = ({ onChange }) => {
 
     setSelectedTags(nextSelectedTags);
 
-    // 🔥 Notificamos al componente padre
     onChange(nextSelectedTags);
   };
 

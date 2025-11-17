@@ -32,8 +32,8 @@ const NewEventCarousel: React.FC<Props> = ({ onImagesChange }) => {
   };
 
   return (
-    <div className="event-carousel-container">
-      <Carousel arrows dots={true}>
+    <div className="event-carousel-container" >
+      <Carousel arrows dots={true} >
         {imagenes.map((src, i) => (
           <div key={i} className="event-carousel-slide">
             <img src={src} className="event-carousel-img" />

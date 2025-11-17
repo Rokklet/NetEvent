@@ -11,9 +11,10 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     const eventos = await Event.find()
-      .populate("organizador", "nombre foto");
+      .populate("organizador", "nombre foto _id");
 
-    res.json(eventos);
+
+      res.json(eventos);
   } catch (err: any) {
     res.status(500).json({ message: "Error al cargar eventos" });
   }
@@ -56,21 +57,41 @@ router.post("/", auth, async (req: AuthRequest, res) => {
   }
 });
 
-/* obetener evento por id */
-
-router.get("/:id", async (req, res) => {
+// Eventos del organizardor
+router.get("/mis-eventos", auth, requireRole(["organizer"]), async (req: AuthRequest, res) => {
   try {
-    const evento = await Event.findById(req.params.id);
+    if (!req.user) return res.status(401).json({ message: "No autenticado" });
 
-    if (!evento) {
-      return res.status(404).json({ message: "Evento no encontrado" });
-    }
+    const eventos = await Event.find({ organizador: req.user.id });
 
-    res.json(evento);
-  } catch (err) {
-    res.status(500).json({ message: "Error al obtener evento" });
+    res.json(eventos);
+  } catch (err: any) {
+    res.status(500).json({ message: "Error al obtener eventos publicados", error: err.message });
   }
 });
+
+
+// Mis inscripciones
+router.get("/usuario/inscripto", auth, async (req: AuthRequest, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "No autenticado" });
+    }
+
+    const eventos = await Event.find({
+      inscriptos: req.user.id
+    }).populate("organizador", "nombre foto _id");
+
+    res.json(eventos);
+  } catch (err: any) {
+    res.status(500).json({
+      message: "Error al cargar tus inscripciones",
+      error: err.message,
+    });
+  }
+});
+
+
 
 
 
@@ -149,26 +170,22 @@ router.get("/:id/inscriptos/pdf", auth, requireRole(["organizer"]), async (req: 
   }
 });
 
+/* obetener evento por id */
 
-// Mis inscripciones
-router.get("/usuario/inscripto", auth, async (req: AuthRequest, res) => {
+router.get("/:id", async (req, res) => {
   try {
-    if (!req.user) {
-      return res.status(401).json({ message: "No autenticado" });
+    const evento = await Event.findById(req.params.id);
+
+    if (!evento) {
+      return res.status(404).json({ message: "Evento no encontrado" });
     }
 
-    const eventos = await Event.find({
-      inscriptos: req.user.id
-    }).populate("organizador", "nombre foto");
-
-    res.json(eventos);
-  } catch (err: any) {
-    res.status(500).json({
-      message: "Error al cargar tus inscripciones",
-      error: err.message,
-    });
+    res.json(evento);
+  } catch (err) {
+    res.status(500).json({ message: "Error al obtener evento" });
   }
 });
+
 
 
 export default router;
