@@ -27,14 +27,10 @@ const RegisterOrganizador: React.FC = () => {
   // Guarda la imagen cargada localmente como URL base64
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-  // Controla el estado de carga (loading) durante el envío del formulario
+  // Control el estado de carga (loading) durante el envío del formulario
   const [loading, setLoading] = useState(false);
 
-  /**
-   * Maneja el cambio de imagen de perfil.
-   * Convierte el archivo seleccionado en una URL base64 temporal
-   * para poder mostrar la vista previa sin subirla aún al servidor.
-   */
+  
   const handleChange = (info: UploadChangeParam) => {
     const file = info.file.originFileObj;
     if (file) {

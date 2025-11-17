@@ -57,8 +57,12 @@ const NavbarOrganizador: React.FC = () => {
           <Descriptions.Item label="Nombre">{user?.nombre}</Descriptions.Item>
 
           <Dropdown menu={{ items }} placement="bottomRight" arrow>
-            <Avatar icon={<UserOutlined />} className="navbar-avatar" />
-        </Dropdown>
+              <Avatar
+                size={40}
+                src={user?.foto || undefined}
+                icon={!user?.foto && <UserOutlined />}
+              />
+          </Dropdown>
 
         </div>
         

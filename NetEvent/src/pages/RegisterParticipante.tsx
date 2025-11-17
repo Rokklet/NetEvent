@@ -7,7 +7,7 @@ import {
   Typography,
   Form,
   Input,
-  Upload,
+  Flex,
   Avatar,
   message,
 } from "antd";
@@ -21,7 +21,6 @@ const RegisterParticipante: React.FC = () => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Carga local de foto de perfil (solo visual, todavía no se guarda en backend)
   const handleChange = (info: UploadChangeParam) => {
     const file = info.file.originFileObj;
     if (file) {
@@ -31,13 +30,21 @@ const RegisterParticipante: React.FC = () => {
     }
   };
 
-  const onFinish = async (values: { nombre: string; correo: string; password: string }) => {
+  const onFinish = async (values: { 
+    nombre: string; 
+    correo: string; 
+    password: string 
+  }) => {
     setLoading(true);
     try {
       const response = await fetch("http://localhost:5000/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, role: "participant" }),
+        body: JSON.stringify({
+          ...values, 
+          role: "participant",
+          foto: imageUrl,
+        }),
       });
 
       const data = await response.json();
@@ -64,17 +71,38 @@ const RegisterParticipante: React.FC = () => {
 
       <Form layout="vertical" onFinish={onFinish}>
         <div style={{ textAlign: "center", marginBottom: 16 }}>
-          <Avatar
-            size={100}
-            src={imageUrl || undefined}
-            icon={!imageUrl && <UserOutlined />}
-            className="avatar-preview"
-          />
-          <Col>
-            <Upload showUploadList={false} beforeUpload={() => false} onChange={handleChange}>
-              <Button icon={<UploadOutlined />}>Subir foto</Button>
-            </Upload>
-          </Col>
+            <Flex vertical align="center">
+
+                <Avatar
+                    size={100}
+                    src={imageUrl || undefined}
+                    icon={!imageUrl && <UserOutlined />}
+                    className="avatar-preview"
+                    style={{ marginBottom: 10, border: "2px solid #f0f0f0" }}
+                />
+
+                <Button
+                    icon={<UploadOutlined />}
+                    onClick={() => {
+                    const input = document.createElement("input");
+                    input.type = "file";
+                    input.accept = "image/*";
+                    input.onchange = (e: any) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                        setImageUrl(reader.result as string);
+                        };
+                        reader.readAsDataURL(file);
+                    };
+                    input.click();
+                    }}
+                >
+                    Subir foto
+                </Button>
+            </Flex>
+            
         </div>
 
         <Form.Item

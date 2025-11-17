@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
 import eventRoutes from "./routes/eventRoutes";
+import inscriptionRoutes from "./routes/inscriptionRoutes";
 
 dotenv.config();
 
@@ -12,6 +13,9 @@ const app = express();
 /*middlewares*/
 app.use(cors());
 app.use(express.json());
+app.use("/api/inscripciones", inscriptionRoutes);
+app.use("/api/eventos", eventRoutes);
+
 
 mongoose
   .connect(process.env.MONGO_URI!)

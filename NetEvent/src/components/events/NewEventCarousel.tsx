@@ -11,10 +11,7 @@ interface Props {
 const NewEventCarousel: React.FC<Props> = ({ onImagesChange }) => {
 
 
-  const [imagenes, setImagenes] = useState<string[]>([
-    "https://netacad.com/p/ff9e491c-49be-4734-803e-a79e6e83dab1/a6efd491-1ca7-4275-88e4-746f3cfdf5b7/image.png",
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLveODLzdsMPIeRyCqLykOEtAhF0P-zoM2cw&s",
-  ]);
+  const [imagenes, setImagenes] = useState<string[]>([]);
 
    const props: UploadProps = {
     showUploadList: false,

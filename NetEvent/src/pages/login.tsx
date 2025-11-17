@@ -31,6 +31,7 @@ const Login: React.FC = () => {
       localStorage.setItem("nombre", data.user.nombre);
       localStorage.setItem("correo", data.user.correo);
       localStorage.setItem("foto", data.user.foto || "");
+      localStorage.setItem("userId", data.user._id);
 
 
       // Actualiza el contexto global
@@ -38,6 +39,7 @@ const Login: React.FC = () => {
         nombre: data.user.nombre,
         correo: data.user.correo,
         role: data.user.role,
+        _id: data.user._id,
       });
 
       message.success(`Bienvenido, ${data.user.nombre}`);
