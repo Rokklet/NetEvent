@@ -1,8 +1,8 @@
 import React from "react";
 import Basicos from "../components/perfil/Basicos";
 import { useAuth } from "../context/AuthContext";
-import MisEventosParticipante from "../components/perfil/MisEventosParticipante";
-import MisEventosOrganizador from "../components/perfil/MisEventosOrganizador";
+import MisInscripciones from "../components/home/MisInscripciones";
+import MisEventosPublicados from "../components/home/MisEventosPublicados";
 
 const Perfil: React.FC = () => {
   const { user } = useAuth();
@@ -14,12 +14,12 @@ const Perfil: React.FC = () => {
 
     {role === "participant" && (
       <>
-        <MisEventosParticipante />
+        <MisInscripciones />
       </>
     )}
 
     {role === "organizer" && (
-       <MisEventosOrganizador />
+       <MisEventosPublicados />
     )}
     
     </>

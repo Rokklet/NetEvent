@@ -67,7 +67,9 @@ const NavbarOrganizador: React.FC = () => {
           onClick={() => window.location.href = "/nuevoevento"}
         >Nuevo Evento</Button>
 
-        <Descriptions.Item className="navbar-title">{user?.nombre}</Descriptions.Item>
+         <div style={{ color: "white", display: "flex", flexDirection: "column", textAlign: "right" }}>
+          <span style={{ fontSize: "14px", fontWeight: 500 }}>{user?.nombre}</span>
+        </div>
 
         <Dropdown menu={{ items }} placement="bottomRight" arrow>
             <Avatar

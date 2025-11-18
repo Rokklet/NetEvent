@@ -1,7 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Card, Button, message } from "antd";
+import {
+  Card,
+  Button,
+  message,
+  Row,
+  Col,
+  Divider,
+  Typography,
+  Tag,
+  Table,
+  Space,
+} from "antd";
 import { useAuth } from "../context/AuthContext";
+import ViewEventCarousel from "../components/events/ViewEventCarousel";
+
+const { Title, Paragraph } = Typography;
 
 const Evento: React.FC = () => {
   const { id } = useParams();
@@ -22,7 +36,7 @@ const Evento: React.FC = () => {
       const data = await res.json();
       setEvento(data);
 
-      if (data.inscriptos && userId && data.inscriptos.includes(userId)) {
+      if (data && data.inscriptos && userId && data.inscriptos.includes(userId)) {
         setInscripto(true);
       }
     };
@@ -33,10 +47,13 @@ const Evento: React.FC = () => {
   const inscribirse = async () => {
     const token = localStorage.getItem("token");
 
-    const res = await fetch(`http://localhost:5000/api/eventos/inscribir/${id}`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await fetch(
+      `http://localhost:5000/api/eventos/inscribir/${id}`,
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
 
     const data = await res.json();
 
@@ -63,7 +80,6 @@ const Evento: React.FC = () => {
         return message.error("No se pudo descargar el PDF");
       }
 
-      // Descargar PDF
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
 
@@ -86,39 +102,91 @@ const Evento: React.FC = () => {
     evento.organizador &&
     (evento.organizador._id === user._id || evento.organizador === user._id);
 
+  // Columnas para la tabla (mantener como any para evitar errores de tipado)
+  const columnasCharlas: any[] = [
+    { title: "Persona", dataIndex: "persona", key: "persona" },
+    { title: "Título", dataIndex: "titulo", key: "titulo" },
+    { title: "Inicio", dataIndex: "inicio", key: "inicio" },
+    { title: "Fin", dataIndex: "fin", key: "fin" },
+  ];
+
+  const charlasData = evento.charlas || [];
+
   return (
-    <Card title={evento.titulo}>
-      <p>{evento.descripcion}</p>
+    <Card title="Detalles del Evento">
+      <Space direction="vertical" style={{ width: "100%" }} size="large">
+        
+        <ViewEventCarousel images={evento.imagenes || []} />
 
+        {/* Título */}
+        <Title level={2}>{evento.titulo}</Title>
 
-      {/*Boton de evento, organizador del evento debe poder descargar un PFS con los inscriptos. 
-      Los participantes pueden incrbirse pero los guest no */}
-      {/* Botón de inscripción para participantes */}
-      {user?.role === "participant" && (
-        <Button
-          type={inscripto ? "default" : "primary"}
-          disabled={inscripto}
-          style={{
-            backgroundColor: inscripto ? "#ccc" : undefined,
-            color: inscripto ? "#555" : undefined,
+        <Row gutter={16}>
+          <Col flex={3}>
+            <Paragraph>{evento.descripcion}</Paragraph>
+
+            <p>
+              <strong>Fecha del evento: </strong>
+              {evento.fecha ? new Date(evento.fecha).toLocaleString() : "—"}
+            </p>
+          </Col>
+
+          <Col flex={1}>
+            <p>
+              <strong>Ubicación:</strong> {evento.ubicacion || "—"}
+            </p>
+
+            <div style={{ marginTop: 10 }}>
+              <strong>Categorías:</strong>
+              <div style={{ marginTop: 8 }}>
+                {(evento.tags || []).map((tag: string) => (
+                  <Tag key={tag} style={{ marginBottom: 6 }}>
+                    {tag}
+                  </Tag>
+                ))}
+              </div>
+            </div>
+          </Col>
+        </Row>
+
+        <Divider />
+
+        {/* Charlas: tipamos Table como Table<any> y protegemos rowKey */}
+        <Title level={4}>Agenda del Evento</Title>
+        <Table<any>
+          dataSource={charlasData}
+          columns={columnasCharlas}
+          rowKey={(c: any) => {
+            // si la charla viene como string (por cualquier motivo) devolvemos la string
+            if (typeof c === "string") return c;
+            // sino construimos key segura
+            return `${c.titulo ?? ""}-${c.inicio ?? ""}-${Math.random()
+              .toString(36)
+              .substr(2, 5)}`;
           }}
-          onClick={!inscripto ? inscribirse : undefined}
-        >
-          {inscripto ? "Ya inscripto" : "Inscribirme"}
-        </Button>
-      )}
+          pagination={false}
+        />
 
+        <Divider />
 
-      {/* Botón PDF solo para el organizador dueño */}
-      {esOrganizadorDueño && (
-        <Button
-          style={{ marginLeft: 10 }}
-          type="default"
-          onClick={descargarPDF}
-        >
-          Descargar lista PDF
-        </Button>
-      )}
+        <Space>
+          {/* Botón de inscripción */}
+          {user?.role === "participant" && (
+            <Button
+              type={inscripto ? "default" : "primary"}
+              disabled={inscripto}
+              onClick={!inscripto ? inscribirse : undefined}
+            >
+              {inscripto ? "Ya inscripto" : "Inscribirme"}
+            </Button>
+          )}
+
+          {/* Botón PDF para organizador dueño */}
+          {esOrganizadorDueño && (
+            <Button onClick={descargarPDF}>Descargar lista PDF</Button>
+          )}
+        </Space>
+      </Space>
     </Card>
   );
 };

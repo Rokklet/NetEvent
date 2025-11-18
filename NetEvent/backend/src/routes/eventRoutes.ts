@@ -93,8 +93,6 @@ router.get("/usuario/inscripto", auth, async (req: AuthRequest, res) => {
 
 
 
-
-
 /*Inscribirse a evento*/
 
 router.post("/inscribir/:id", auth, async (req: AuthRequest, res) => {

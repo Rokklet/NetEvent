@@ -32,6 +32,7 @@ const Login: React.FC = () => {
       localStorage.setItem("correo", data.user.correo);
       localStorage.setItem("foto", data.user.foto || "");
       localStorage.setItem("userId", data.user._id);
+      localStorage.setItem("descripcion", data.user.descripcion);
 
 
       // Actualiza el contexto global

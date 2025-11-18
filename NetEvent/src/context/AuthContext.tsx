@@ -8,6 +8,7 @@ interface User {
   correo?: string;
   role: Role;
   foto?: string;
+  descripcion?: string;
 }
 
 interface AuthContextType {
@@ -27,6 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const correo = localStorage.getItem("correo");
   const role = (localStorage.getItem("role") as Role) || "guest";
   const foto = localStorage.getItem("foto");
+  const descripcion = localStorage.getItem("descripcion");
 
   if (_id && nombre && role) {
     setUser({
@@ -34,7 +36,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       nombre,
       correo: correo || "",
       role,
-      foto: foto || ""
+      foto: foto || "",
+      descripcion: descripcion || ""
     });
   }
 }, []);

@@ -27,7 +27,7 @@ const NavbarOrganizador: React.FC = () => {
       key: "perfil",
       label: "Perfil",
       icon: <UserOutlined />,
-      onClick: () => window.location.href = "/home",
+      onClick: () => window.location.href = "/Perfil",
     },
     {
       type: "divider",
@@ -54,7 +54,9 @@ const NavbarOrganizador: React.FC = () => {
       </Title>
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
 
-          <Descriptions.Item label="Nombre">{user?.nombre}</Descriptions.Item>
+        <div style={{ color: "white", display: "flex", flexDirection: "column", textAlign: "right" }}>
+          <span style={{ fontSize: "14px", fontWeight: 500 }}>{user?.nombre}</span>
+        </div>
 
           <Dropdown menu={{ items }} placement="bottomRight" arrow>
               <Avatar

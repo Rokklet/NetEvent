@@ -13,14 +13,13 @@ const Recomendaciones: React.FC = () => {
   useEffect(() => {
     const cargarEventos = async () => {
       try {
-        // Traer todos los eventos
         const res = await fetch("http://localhost:5000/api/eventos");
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);
 
         setEventos(data);
 
-        // traer eventos del participante
+        // solo los participantes tienen inscripciones
         if (user?.role === "participant") {
           const token = localStorage.getItem("token");
 
@@ -46,11 +45,17 @@ const Recomendaciones: React.FC = () => {
 
   if (loading) return <Spin />;
 
-  // si no es participante, se trae todo
-  if (!user || user.role !== "participant") {
+  // ovulta al organizador sus propios eventos
+
+  if (user?.role === "organizer") {
+    const recomendados = eventos.filter(ev => {
+      const idOrg = ev.organizador?._id || ev.organizador;
+      return idOrg !== user._id;
+    });
+
     return (
       <Card title="Recomendaciones">
-        {eventos.map((ev) => (
+        {recomendados.map((ev) => (
           <EventCard
             key={ev._id}
             id={ev._id}
@@ -66,7 +71,7 @@ const Recomendaciones: React.FC = () => {
     );
   }
 
-  // Si no tiene incripciones, trae todo
+  // si participante no tiene incripciones muestra todo
   if (misEventos.length === 0) {
     return (
       <Card title="Recomendaciones">
@@ -86,33 +91,26 @@ const Recomendaciones: React.FC = () => {
     );
   }
 
-  // se trae un set de tag del participante
+  // recomendación por tags
+
   const tagsUsuario = new Set<string>();
-  misEventos.forEach((ev) => ev.tags.forEach((tag: string) => tagsUsuario.add(tag)));
+  misEventos.forEach((ev) =>
+    ev.tags.forEach((tag: string) => tagsUsuario.add(tag))
+  );
 
-  // id donde el usuario ya está inscripto
-  const eventosInscriptosIds = new Set(misEventos.map((ev) => ev._id));
+  const eventosInscriptosIds = new Set(misEventos.map(ev => ev._id));
 
-  
+  const recomendados = eventos.filter(ev => {
+    const idOrg = ev.organizador?._id || ev.organizador;
 
-  // filtrar eventos recomendados
-  const recomendados = eventos.filter((ev) => {
+    // No recomendar eventos ya inscriptos
     if (eventosInscriptosIds.has(ev._id)) return false;
 
-    // No recomendar eventos donde el usuario ya se inscribió
-    if (eventosInscriptosIds.has(ev._id)) return false;
+    // No recomendar eventos del organizador (por si es organizer=participant)
+    if (user && idOrg === user._id) return false;
 
-    // No recomendar eventos creados por el organizador
-    //if (user?.role === "organizer" && ev.organizador?._id === user._id) return false;
 
-    const esDelOrganizador =
-      user?.role === "organizer" &&
-      (ev.organizador === user._id ||
-      ev.organizador?._id === user._id);
-
-        if (esDelOrganizador) return false;
-
-    // evento debe compartir al menos 1 tag
+    // Debe compartir mínimo 1 tag
     return ev.tags.some((tag: string) => tagsUsuario.has(tag));
   });
 

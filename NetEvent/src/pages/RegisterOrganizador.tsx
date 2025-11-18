@@ -40,9 +40,7 @@ const RegisterOrganizador: React.FC = () => {
 
   /**
    * Envía los datos del formulario al backend para registrar un organizador.
-   * Hace una petición POST al endpoint `/api/auth/register`.
-   * En caso de éxito, muestra un mensaje y redirige al login.
-   */
+*/
   const onFinish = async (values: {
     nombre: string;
     correo: string;

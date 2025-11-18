@@ -38,7 +38,17 @@ router.post("/login", async (req, res) => {
       expiresIn: "1d"
     });
 
-    res.json({ token, user });
+      res.json({
+    token,
+    user: {
+      _id: user._id,
+      nombre: user.nombre,
+      correo: user.correo,
+      role: user.role,
+      foto: user.foto,
+      descripcion: user.descripcion || ""
+    }
+  });
   } catch (err: any) {
     res.status(500).json({ message: "Error en el servidor", error: err.message });
   }
