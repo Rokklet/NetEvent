@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
 import eventRoutes from "./routes/eventRoutes";
 import inscriptionRoutes from "./routes/inscriptionRoutes";
+import commentRoutes from "./routes/commentRoutes";
 
 dotenv.config();
 
@@ -19,11 +20,12 @@ app.use("/api/eventos", eventRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI!)
-  .then(() => console.log("✅ Conectado a MongoDB"))
-  .catch((err) => console.error("❌ Error de conexión:", err));
+  .then(() => console.log(" Conectado a MongoDB"))
+  .catch((err) => console.error(" Error de conexión:", err));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/eventos", eventRoutes);
+app.use("/api/eventos", commentRoutes);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Servidor corriendo en puerto ${PORT}`));
+app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));

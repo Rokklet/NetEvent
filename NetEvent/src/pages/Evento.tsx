@@ -169,6 +169,10 @@ const Evento: React.FC = () => {
 
         <Divider />
 
+          <Title level={4}>Sección de Comentarios</Title>
+
+        <Divider />
+
         <Space>
           {/* Botón de inscripción */}
           {user?.role === "participant" && (
