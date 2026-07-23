@@ -35,7 +35,7 @@ const BuscadorEventos: React.FC = () => {
   });
 
   return (
-    <Card title="Buscar eventos">
+    <Card title="Buscar eventos" style={{backgroundColor: '#f3f3f3'}}>
       <Input
         prefix={<SearchOutlined />}
         placeholder="Buscar por nombre o categoría"

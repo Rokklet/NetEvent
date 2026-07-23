@@ -45,7 +45,7 @@ const MisInscripciones: React.FC = () => {
     return <p>Solo los participantes pueden ver sus inscripciones.</p>;
 
   return (
-    <Card title="Mis Inscripciones">
+    <Card title="Mis Inscripciones" style={{backgroundColor: '#f3f3f3'}}>
       {eventos.length === 0 ? (
         <p>No estás inscripto a ningún evento.</p>
       ) : (

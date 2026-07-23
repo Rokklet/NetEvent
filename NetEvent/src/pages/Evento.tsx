@@ -1,24 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Card,
-  Button,
-  message,
-  Row,
-  Col,
-  Divider,
-  Typography,
-  Tag,
-  Table,
-  Space,
-} from "antd";
+import {  Card,Button,message,Row,Col,Divider,Typography,Tag,Table,Space,Result,} from "antd";
 import { useAuth } from "../context/AuthContext";
 import ViewEventCarousel from "../components/events/ViewEventCarousel";
+import CommentSection from "../components/events/CommentSection";
+import { inscribirUsuario } from "../services/EventService";
 
 const { Title, Paragraph } = Typography;
 
 const Evento: React.FC = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
+
+if (!id) {
+    return <Result status="404" title="Evento no encontrado" />;
+}
   const { user } = useAuth();
 
   const [evento, setEvento] = useState<any>(null);
@@ -26,12 +21,9 @@ const Evento: React.FC = () => {
 
   useEffect(() => {
     const fetchEvento = async () => {
-      const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
-
-      const res = await fetch(`http://localhost:5000/api/eventos/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      
+      const res = await fetch(`http://localhost:5000/api/eventos/${id}`);
 
       const data = await res.json();
       setEvento(data);
@@ -43,6 +35,28 @@ const Evento: React.FC = () => {
 
     fetchEvento();
   }, [id]);
+
+  const suscripcion = async () => {
+    const token = localStorage.getItem("token");
+      
+    if (!token){
+      message.error("Debés iniciar sesión");
+      return;
+    };
+    
+    try{
+      const res = await inscribirUsuario (id, token);
+      message.success(res.message);
+
+    } catch (error: unknown) {
+        const errorMessage =
+            error instanceof Error
+                ? error.message
+                : "Error al inscribirse";
+
+        message.error(errorMessage);
+    }
+  };
 
   const inscribirse = async () => {
     const token = localStorage.getItem("token");
@@ -171,6 +185,8 @@ const Evento: React.FC = () => {
 
           <Title level={4}>Sección de Comentarios</Title>
 
+          <CommentSection />
+          
         <Divider />
 
         <Space>
@@ -184,6 +200,13 @@ const Evento: React.FC = () => {
               {inscripto ? "Ya inscripto" : "Inscribirme"}
             </Button>
           )}
+
+          <Button
+          type="primary"
+          onClick= {() => suscripcion()}
+          >
+            "Inscripción 2.0"
+          </Button>
 
           {/* Botón PDF para organizador dueño */}
           {esOrganizadorDueño && (

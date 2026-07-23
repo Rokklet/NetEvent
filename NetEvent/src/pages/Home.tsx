@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Spin, message } from "antd";
+import { Row, Col,  message } from "antd";
 import { useAuth } from "../context/AuthContext";
 import Recomendaciones from "../components/home/Recomendaciones";
 import BuscadorEventos from "../components/home/BuscadorEventos";

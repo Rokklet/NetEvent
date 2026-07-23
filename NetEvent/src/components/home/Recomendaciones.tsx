@@ -54,7 +54,7 @@ const Recomendaciones: React.FC = () => {
     });
 
     return (
-      <Card title="Recomendaciones">
+      <Card title="Recomendaciones" style={{backgroundColor: '#f3f3f3'}}>
         {recomendados.map((ev) => (
           <EventCard
             key={ev._id}

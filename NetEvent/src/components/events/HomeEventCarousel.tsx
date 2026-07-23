@@ -24,6 +24,7 @@ const HomeEventCarousel: React.FC<HomeEventCarouselProps> = ({ eventos }) => {
               style={{
                 padding: "10px 0",
                 cursor: "pointer",
+                backgroundColor: '#f3f3f3'
               }}
               onClick={() => navigate(`/evento/${ev._id}`)}
             >
@@ -34,6 +35,7 @@ const HomeEventCarousel: React.FC<HomeEventCarouselProps> = ({ eventos }) => {
                   margin: "0 auto",
                   borderRadius: 12,
                   overflow: "hidden",
+                  backgroundColor: '#f3f3f3'
                 }}
                 cover={
                   <img

@@ -30,8 +30,6 @@ const PublicarEvento: React.FC = () => {
     { id: Date.now(), persona: "", titulo: "", inicio: "", fin: "" }
   ]);
 
-  
-
   const agregarCharla = () => {
     setCharlas((prev) => [
       ...prev,

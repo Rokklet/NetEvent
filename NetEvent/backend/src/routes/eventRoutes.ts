@@ -13,7 +13,6 @@ router.get("/", async (req, res) => {
     const eventos = await Event.find()
       .populate("organizador", "nombre foto _id");
 
-
       res.json(eventos);
   } catch (err: any) {
     res.status(500).json({ message: "Error al cargar eventos" });
@@ -110,6 +109,7 @@ router.post("/inscribir/:id", auth, async (req: AuthRequest, res) => {
       return res.status(400).json({ message: "Solo los participantes pueden inscribirse" });
     }
     
+    console.log("Prueba path");
 
     const evento = await Event.findById(eventId);
     if (!evento) {

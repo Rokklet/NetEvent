@@ -39,7 +39,7 @@ const MisEventosPublicados: React.FC = () => {
   if (loading) return <Spin />;
 
   return (
-    <Card title="Mis eventos publicados">
+    <Card title="Mis eventos publicados" style={{backgroundColor: '#f3f3f3'}}>
       {eventos.length === 0 ? (
         <p>No tenés eventos publicados.</p>
       ) : (

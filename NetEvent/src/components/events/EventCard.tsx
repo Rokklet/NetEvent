@@ -30,7 +30,7 @@ const EventCard: React.FC<EventCardProps> = ({
       hoverable
       className="event-card"
       onClick={() => navigate(`/evento/${id}`)}
-      bodyStyle={{ padding: "16px 20px" }}
+      bodyStyle={{ backgroundColor: '#f7f7f7', padding: "16px 20px" }}
     >
       <div style={{ display: "flex", alignItems: "flex-start", gap: "16px" }}>
         <Avatar
