@@ -14,6 +14,7 @@ const app = express();
 /*middlewares*/
 app.use(cors());
 app.use(express.json());
+
 app.use("/api/inscripciones", inscriptionRoutes);
 app.use("/api/eventos", eventRoutes);
 app.use("/api/auth", authRoutes);

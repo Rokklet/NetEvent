@@ -84,7 +84,7 @@ if (!id) {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `http://localhost:5000/api/eventos/${id}/inscriptos/pdf`,
+        `http://localhost:5000/api/inscripciones/${id}/inscriptos/pdf`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
