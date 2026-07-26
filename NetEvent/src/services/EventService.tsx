@@ -3,10 +3,10 @@ interface ApiMessageResponse {
   message: string;
 }
 
-export const traerEvento = async (eventId: string): Promise<ApiMessageResponse> => {
+export const traerEvento = async (eventId: string): Promise<any> => {
     const res = await fetch(`http://localhost:5000/api/eventos/${eventId}`);
 
-    const data: ApiMessageResponse = await res.json();
+    const data = await res.json();
 
     if (!res.ok){
         throw new Error(data.message);

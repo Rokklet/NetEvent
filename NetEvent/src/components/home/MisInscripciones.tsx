@@ -18,9 +18,10 @@ const MisInscripciones: React.FC = () => {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await fetch("http://localhost:5000/api/eventos/usuario/inscripto", {
+        const response = await fetch("http://localhost:5000/api/inscripciones/usuario", {
           headers: { Authorization: `Bearer ${token}` }
         });
+        
 
         const data = await response.json();
 

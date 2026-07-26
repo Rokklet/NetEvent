@@ -1,10 +1,11 @@
-import mongoose, { Schema, Document, ObjectId } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 export interface IComment {
     evento: mongoose.Types.ObjectId;
     autor: mongoose.Types.ObjectId;
     texto: string;
-    fecha: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 const CommentSchema = new Schema<IComment>(
@@ -16,7 +17,7 @@ const CommentSchema = new Schema<IComment>(
             type: Schema.Types.ObjectId, ref: "User",required: true
         },
         texto: {
-            type: String, required: true
+            type: String, required: true, trim: true
         },
     },
     {timestamps: true}

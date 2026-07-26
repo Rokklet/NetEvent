@@ -4,37 +4,61 @@ import {  Card,Button,message,Row,Col,Divider,Typography,Tag,Table,Space,Result,
 import { useAuth } from "../context/AuthContext";
 import ViewEventCarousel from "../components/events/ViewEventCarousel";
 import CommentSection from "../components/events/CommentSection";
-import { inscribirUsuario } from "../services/EventService";
+import { inscribirUsuario, traerEvento } from "../services/EventService";
+import { obtenerPDF, verificarInscripcion } from "../services/InscriptionService";
 
 const { Title, Paragraph } = Typography;
 
 const Evento: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-
-if (!id) {
-    return <Result status="404" title="Evento no encontrado" />;
-}
   const { user } = useAuth();
 
   const [evento, setEvento] = useState<any>(null);
   const [inscripto, setInscripto] = useState(false);
 
+
   useEffect(() => {
+
+    if(!id) return;
+
     const fetchEvento = async () => {
-      const userId = localStorage.getItem("userId");
-      
-      const res = await fetch(`http://localhost:5000/api/eventos/${id}`);
-
-      const data = await res.json();
-      setEvento(data);
-
-      if (data && data.inscriptos && userId && data.inscriptos.includes(userId)) {
-        setInscripto(true);
+      try{
+        const data = await traerEvento(id);
+        setEvento(data);
+      }catch(error){
+        message.error("No se pudo cargar el evento");
       }
     };
 
+    const consultarInscripcion = async () => {
+      if (user?.role !== "participant") {
+        setInscripto(false);
+        return
+      }
+
+      const token = localStorage.getItem("token");
+
+      if (!token){
+        setInscripto(false);
+        return
+      }
+
+      try{
+        const estado = await verificarInscripcion(token, id);
+        setInscripto(estado);
+      }catch(error){
+        message.error("No se puede verificar la inscripción")
+      };
+    }
+
     fetchEvento();
-  }, [id]);
+    consultarInscripcion();
+
+  }, [id, user?.role]);
+
+  if (!id) {
+    return <Result status="404" title="Evento no encontrado" />;
+  }
 
   const suscripcion = async () => {
     const token = localStorage.getItem("token");
@@ -46,36 +70,13 @@ if (!id) {
     
     try{
       const res = await inscribirUsuario (id, token);
+
+      setInscripto(true);
+
       message.success(res.message);
 
-    } catch (error: unknown) {
-        const errorMessage =
-            error instanceof Error
-                ? error.message
-                : "Error al inscribirse";
-
-        message.error(errorMessage);
-    }
-  };
-
-  const inscribirse = async () => {
-    const token = localStorage.getItem("token");
-
-    const res = await fetch(
-      `http://localhost:5000/api/eventos/inscribir/${id}`,
-      {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-
-    const data = await res.json();
-
-    if (res.ok) {
-      setInscripto(true);
-      message.success("Te inscribiste correctamente");
-    } else {
-      message.error(data.message || "Error al inscribirse");
+    } catch (error) {
+        message.error("Error al Inscribirte");
     }
   };
 
@@ -83,26 +84,10 @@ if (!id) {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch(
-        `http://localhost:5000/api/inscripciones/${id}/inscriptos/pdf`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      if (!token) throw new Error("Debe iniciar sesión")
 
-      if (!response.ok) {
-        return message.error("No se pudo descargar el PDF");
-      }
+      await obtenerPDF(token, id);
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `inscriptos-${id}.pdf`;
-      a.click();
-
-      window.URL.revokeObjectURL(url);
     } catch (error) {
       message.error("Error al descargar PDF");
     }
@@ -195,18 +180,11 @@ if (!id) {
             <Button
               type={inscripto ? "default" : "primary"}
               disabled={inscripto}
-              onClick={!inscripto ? inscribirse : undefined}
+              onClick={!inscripto ? suscripcion : undefined}
             >
               {inscripto ? "Ya inscripto" : "Inscribirme"}
             </Button>
           )}
-
-          <Button
-          type="primary"
-          onClick= {() => suscripcion()}
-          >
-            "Inscripción 2.0"
-          </Button>
 
           {/* Botón PDF para organizador dueño */}
           {esOrganizadorDueño && (

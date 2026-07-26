@@ -1,54 +1,62 @@
 import express from "express";
 import Comment from "../models/Comment";
 import { auth , AuthRequest, requireRole } from "../middleware/auth";
-import User from "../models/User";
+import Event from "../models/Event";
+import { asyncHandler } from "../utils/asyncHandler";
+import { AppError } from "../errors/AppError";
 
 
 const router = express.Router();
 
-router.get("/:eventId/comments", async (req, res) => {
-    try {
+router.get("/:eventId/comments",
+asyncHandler(
+    async (req, res) => {
 
         const { eventId } = req.params;
+        
+        const eventoExiste = await Event.exists({_id: eventId});
+        if(!eventoExiste) throw new AppError("Evento no encontrado", 404);
+
         const comentarios = await Comment.find({ evento: eventId })
-        .populate("autor", "nombre foto");
+        .populate("autor", "nombre foto").sort({ createdAt: 1});
 
         res.json(comentarios);
-    } catch (err: any) {
-        res.status(500).json({
-        message: "Error al obtener comentarios",
-        error: err.message,
-    });
     }
-});
+));
 
  
-router.post("/:eventId/comments", auth, async (req: AuthRequest, res) => {
-    try {
-        const eventId = req.params.eventId;
+router.post("/:eventId/comments", auth, requireRole(["participant"]), 
+asyncHandler<AuthRequest>(
+    async (req, res) => {
+
+        if (!req.user) throw new AppError("Usuario no autenticado", 401);
+    
         const { texto } = req.body;
 
-        if (!req.user) {
-           return res.status(401).json({ message: "Usuario no autenticado" });
-        }
+        if (!texto?.trim()) throw new AppError("El comentario no puede estar vacio",400);
 
-        if (!texto || !texto.trim()) {
-            return res.status(400).json({ message: "El comentario no puede estar vacío" });
-        }
+        const { eventId } = req.params;
 
-        const comentario = new Comment ({
-            evento: eventId,
-            texto: texto,
-            autor: req.user?.id,
-        })
+        const eventoExiste = await Event.exists({_id: eventId});
+        if(!eventoExiste) throw new AppError("Evento no encontrado", 404);
         
-        await comentario.save();
+       
+        
+
+        const comentario = await Comment.create({
+            evento: eventId,
+            texto: texto.trim(),
+            autor: req.user.id,
+        });
+
+        await comentario.populate(
+            "autor",
+            "nombre foto"
+        );
 
         res.status(201).json(comentario);
-    } catch (err: any){
-        res.status(500).json({ message: "Error al cargar los comentarios", error: err.message,});
     }
-});
+));
 
 
 export default router;

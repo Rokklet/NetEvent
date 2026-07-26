@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { AppError } from "../errors/AppError";
 
 export interface AuthRequest extends Request {
   user?: { id: string; role: string };
@@ -9,29 +10,24 @@ export interface AuthRequest extends Request {
 export const auth = (req: AuthRequest, res: Response, next: NextFunction) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
 
-  if (!token) {
-    return res.status(401).json({ message: "No autorizado: falta token" });
-  }
+  if (!token) throw new AppError("No autorizado: falta token",401);
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
     req.user = decoded as { id: string; role: string }; // Guarda datos del usuario
     next();
-  } catch (err) {
-    return res.status(401).json({ message: "Token inválido" });
+  } catch {
+    next(
+      new AppError("Token inválido", 401));
   }
 };
 
 // verificar roles
 export const requireRole = (roles: string[]) => {
   return (req: AuthRequest, res: Response, next: NextFunction) => {
-    if (!req.user) {
-      return res.status(401).json({ message: "Usuario no autenticado" });
-    }
+    if (!req.user) throw new AppError("Usuario no autenticado", 401);
 
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ message: "No tienes permisos para esta acción" });
-    }
+    if (!roles.includes(req.user.role)) throw new AppError("No tienes permisos para realizar esta acción");
 
     next();
   };

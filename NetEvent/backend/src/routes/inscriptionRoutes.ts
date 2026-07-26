@@ -5,77 +5,73 @@ import User from "../models/User";
 import PDFDocument from "pdfkit";
 
 import Inscription from "../models/Inscription";
+import { asyncHandler } from "../utils/asyncHandler";
+import { AppError } from "../errors/AppError";
 
 const router = express.Router();
 
 /* Inscribirse a un evento */
-router.post("/:eventoId", auth, async (req: AuthRequest, res) => {
-  try {
+router.post("/:eventoId", auth, requireRole(["participant"]), asyncHandler<AuthRequest>(
+
+  async (req, res) => {
+    if (!req.user) throw new AppError("Usuario no autenticado", 401);
 
     const { eventoId } = req.params;
-
-    if (!req.user) {
-      return res.status(401).json({ message: "No estás autenticado" });
-    }
-
     const userId = req.user.id;
     
     const evento = await Event.findById(eventoId);
     const usuario = await User.findById(userId);
 
-    if (!evento) return res.status(404).json({ message: "Evento no encontrado" });
-    if (!usuario) return res.status(404).json({ message: "Usuario no encontrado" });
+    if (!evento) throw new AppError("Evento no encontrado", 404);
+    if (!usuario) throw new AppError("Usuario no encontrado", 404);
 
     
     if (await Inscription.findOne({ evento: eventoId, participante: userId})) {
-      return res.status(400).json({ message: "Ya estas inscripto a este evento"});
+      throw new AppError("Ya estas inscripto a este evento", 409);
     }
 
-    const nuevaInscripcion = await Inscription.create({
+    await Inscription.create({
       evento: eventoId,
       participante: userId,
     });
 
-    return res.status(200).json({
+    res.status(201).json({
       message: "Inscripción exitosa"
     })
+}));
 
-  } catch (err: any) {
-    res.status(500).json({ 
-      message: "Error al inscribirse", 
-      error: err.message });
-  }
-});
+interface PopulatedParticipant {
+  _id: unknown;
+  nombre: string;
+  correo: string;
+}
 
-// Obetener lista de inscriptos a un evento por PDF
-router.get("/:id/inscriptos/pdf", auth, requireRole(["organizer"]), async (req: AuthRequest, res: Response) => {
+// Obetener lista de inscriptos a un evento por PDF 
+router.get("/:id/inscriptos/pdf", auth, requireRole(["organizer"]),
+asyncHandler<AuthRequest>(
+  async (req, res: Response, next) => {
 
-  try{
-    const eventId = req.params.id;
+    if (!req.user) throw new AppError("Usuario no autenticado", 401);
 
-    if (!req.user) {
-      return res.status(401).json({ message: "No estás autenticado" });
-    };
+    const evento = await Event.findById(req.params.id);
+    if (!evento) throw new AppError("Evento no encontrado", 404);
 
-    const userId = req.user.id;
-    const evento = await Event.findById(eventId);
+    if (!evento.organizador.equals(req.user.id)) throw new AppError("No tiene permisos para descargar este listado", 403);
 
-    console.log(eventId);
-
-    if (!evento) return res.status(404).json({ message: "Evento no encontrado" });
-    if (!evento.organizador.equals(userId)) return res.status(403).json({ message: "No tienes los permisos necesarios para descargar este PDF"});
-
-    console.log(evento);
-
-    const inscriptos = await Inscription.find({evento: eventId})
-    .populate("participante", "nombre correo");
+    const inscriptos = await Inscription.find({evento: req.params.id})
+    .populate<{ participante: PopulatedParticipant | null;}>
+    ("participante", "nombre correo");
     
-    const participantes = inscriptos.map(ins => ins.participante)
+    const participantes = inscriptos.map(ins => ins.participante).filter((participante): 
+    participante is PopulatedParticipant => participante !== null);
     
-    if(participantes.length === 0) return res.status(404).json({ message: "No se encontraron inscriptos al evento"});
+    if(participantes.length === 0) throw new AppError("No se encontraron inscriptos al evento", 404);
   
     // Crear PDF
     const doc = new PDFDocument();
+
+    doc.on("error", next);
+
     res.setHeader("Content-Disposition", `attachment; filename=inscriptos-${evento._id}.pdf`);
     res.setHeader("Content-Type", "application/pdf");
 
@@ -84,15 +80,53 @@ router.get("/:id/inscriptos/pdf", auth, requireRole(["organizer"]), async (req: 
     doc.fontSize(22).text(`Listado de inscriptos para el evento ${evento.titulo}`, { underline: true });
     doc.moveDown();
 
-    participantes.forEach((user:any, i: number) => {
-      doc.fontSize(14).text(`${i + 1}. ${user.nombre} - ${user.correo}`)
+    participantes.forEach((participante, i) => {
+      doc.fontSize(14).text(`${i + 1}. ${participante.nombre} - ${participante.correo}`)
     });
 
     doc.end();
+}));
 
-  }catch(error: any){
-    res.status(500).json({ message: "Error al generar PDF", error: error.message });
-  };
-});
+//Mis inscripciones
+router.get("/usuario", auth, requireRole(["participant"]), asyncHandler<AuthRequest>(
+  async (req, res) => {
+  
+    if(!req.user) throw new AppError("Usuario no autenticado", 401);
+
+    const inscripciones = await Inscription.find({participante: req.user.id})
+    .populate({
+      path: "evento",
+      populate: {
+        path: "organizador",
+        model: "User",
+        select: "nombre foto _id"
+      }
+    });
+
+    const eventos = inscripciones.map( ins => ins.evento);
+
+    res.json(eventos);  
+  }
+));
+
+//validar usuario incripto
+router.get("/:id/estado", auth, requireRole(["participant"]), asyncHandler<AuthRequest>(
+  async (req, res) => {
+
+    if(!req.user) throw new AppError("Usuario no autenticado", 401);
+    
+    const eventoExiste = await Event.exists({_id: req.params.id,});
+
+    if(!eventoExiste) throw new AppError("Evento no encontrado", 404);
+
+    const inscripcion = await Inscription.exists({
+      evento: req.params.id,
+      participante: req.user.id,
+    });
+
+    res.json({ inscripto: Boolean(inscripcion) });
+  
+  }
+));
 
 export default router;

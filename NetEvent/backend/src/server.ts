@@ -6,6 +6,8 @@ import authRoutes from "./routes/authRoutes";
 import eventRoutes from "./routes/eventRoutes";
 import inscriptionRoutes from "./routes/inscriptionRoutes";
 import commentRoutes from "./routes/commentRoutes";
+import { AppError } from "./errors/AppError";
+import { errorHandler } from "./middleware/errorHandler";
 
 dotenv.config();
 
@@ -19,6 +21,17 @@ app.use("/api/inscripciones", inscriptionRoutes);
 app.use("/api/eventos", eventRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/eventos", commentRoutes);
+
+app.use((req, _res, next) => {
+  next(
+    new AppError(
+      `Ruta no encontrada: ${req.method} ${req.originalUrl}`,
+      404
+    )
+  );
+});
+
+app.use(errorHandler);
 
 mongoose
 .connect(process.env.MONGO_URI!)

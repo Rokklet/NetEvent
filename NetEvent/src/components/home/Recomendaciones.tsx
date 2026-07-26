@@ -24,7 +24,7 @@ const Recomendaciones: React.FC = () => {
           const token = localStorage.getItem("token");
 
           const r2 = await fetch(
-            "http://localhost:5000/api/eventos/usuario/inscripto",
+            "http://localhost:5000/api/inscripciones/usuario",
             {
               headers: { Authorization: `Bearer ${token}` },
             }

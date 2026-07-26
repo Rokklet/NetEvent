@@ -13,12 +13,16 @@ export interface IUser extends Document {
 
 const userSchema = new Schema<IUser>({
   nombre: { type: String, required: true },
-  correo: { type: String, required: true, unique: true },
+  correo: { type: String, required: true, unique: true, trim: true, lowercase: true },
   password: { type: String, required: true },
   role: { type: String, enum: ["organizer", "participant"], default: "participant" },
   descripcion: { type: String },
   foto: { type: String },
-});
+},
+{
+  timestamps: true
+}
+);
 
 /*Encriptado*/
 
