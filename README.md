@@ -57,8 +57,55 @@ inscribirse e interactuar mediante comentarios.
 
 ## Instalación
 
-Clonar el repositorio:
+Clonar el repositorio e instalar dependecias del frontend:
 
 ```bash
 git clone https://github.com/Rokklet/NetEvent.git
 cd NetEvent
+npm install
+```
+Instalar dependecias del backend:
+
+```bash
+cd backend
+npm install
+```
+
+## Migraciones y datos iniciales
+
+Desde la carpeta "backend" consolutar el estado de las migraciones
+
+```bash
+npm run migrate:status
+```
+
+Ejecutar las migraciones pendientes
+
+```bash
+npm run migrate:up
+```
+
+Revertir la ultima migracion
+
+```bash
+npm run migrate:down
+```
+
+## Credenciales Demo
+
+# Organizador
+
+```bash
+Correo: organizador@netevent.demo
+Contraseña: Demo1234!
+```
+
+# Participantes
+
+```bash
+Correo: participante1@netevent.demo
+Contraseña: Demo1234!
+
+Correo: participante2@netevent.demo
+Contraseña: Demo1234!
+```
