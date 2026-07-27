@@ -71,6 +71,10 @@ cd backend
 npm install
 ```
 
+## Variables de entorno
+
+Renombrar el archivo *.env.example*, ubicado en "NetEvent/backend", por *.env*
+
 ## Migraciones y datos iniciales
 
 Desde la carpeta "backend" consolutar el estado de las migraciones
@@ -91,16 +95,16 @@ Revertir la ultima migracion
 npm run migrate:down
 ```
 
-## Credenciales Demo
+### Credenciales Demo
 
-# Organizador
+#### Organizador
 
 ```bash
 Correo: organizador@netevent.demo
 Contraseña: Demo1234!
 ```
 
-# Participantes
+#### Participantes
 
 ```bash
 Correo: participante1@netevent.demo
@@ -108,4 +112,34 @@ Contraseña: Demo1234!
 
 Correo: participante2@netevent.demo
 Contraseña: Demo1234!
+```
+
+## Ejecución
+
+Se necesitan 2 terminales para correr NetEvent
+
+### Backend
+
+Desde la carpeta *backend*:
+
+```bash
+npm run dev
+```
+Disponible en:
+
+```bash
+http://localhost:5000
+```
+
+### Frontend
+
+Desde la raiz del proyecto:
+
+```bash
+npm run dev
+```
+Disponible normalmente en:
+
+```bash
+http://localhost:5173
 ```
