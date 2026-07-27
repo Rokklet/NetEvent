@@ -1,61 +1,64 @@
-"# NetEvent" 
-"NetEvent es un plataforma de eventos de networking empresarial. Permite que usuarios organizadores publiquen eventos con agendas de charlas, y permite que usuarios participantes se inscriban a los eventos, reciban recomendaciones en base a sus gustos y que interactuen con otros participantes"
-"## Roles del Sistema"
-"El sistema tiene 2 tipo de usuario:
-- Organizador: Puede registrarse, iniciar sesión, publicar eventos, ver sus eventos publicados y descargar un listado de inscriptos.
-- Participante: Puede registratse, iniciar sesión, inscribirse a eventos, dar su opinion sobre el mismo."
-"## Tecnologías utilizadas"
-"Frontend:
+# NetEvent
+
+NetEvent es una plataforma web de eventos de networking
+empresarial desarrollada como proyecto final de Programación III.
+
+La aplicación permite que organizadores publiquen eventos con
+agenda de charlas y que los participantes puedan descubrir eventos,
+inscribirse e interactuar mediante comentarios.
+
+## Funcionalidades
+
+### Organizador
+
+- Registro e inicio de sesión.
+- Publicación de eventos.
+- Creación de agenda de charlas.
+- Consulta de eventos publicados.
+- Descarga en PDF del listado de inscriptos.
+
+### Participante
+
+- Registro e inicio de sesión.
+- Búsqueda y consulta de eventos.
+- Visualización de agendas.
+- Inscripción a eventos.
+- Consulta de inscripciones.
+- Recomendaciones de eventos según categorías relacionadas.
+- Interacción mediante comentarios.
+
+## Tecnologías
+
+### Frontend
+
 - React
 - TypeScript
 - Vite
 - React Router
 - Ant Design
 
-Backend:
+### Backend
+
 - Node.js
 - Express
 - TypeScript
 - MongoDB
 - Mongoose
-- JWT para autenticación
-- bcryptjs para encriptar contraseñas
-- pdfkit para generar PDF de inscriptos"
+- JWT
+- bcryptjs
+- PDFKit
+- migrate-mongo
 
-"## Instalación y ejecución local"
+## Requisitos previos
 
-"### Requisitos previos
+- Node.js 20 o superior.
+- npm.
+- MongoDB instalado y en ejecución.
 
-- Node.js instalado
-- MongoDB local o una URI de MongoDB Atlas
-- npm instalado
+## Instalación
 
-### Frontend
-
-Desde la raíz del proyecto:
+Clonar el repositorio:
 
 ```bash
-npm install
-npm run dev"
-
-Después agregás variables de entorno.
-
-```md
-## Variables de entorno del backend
-
-Crear un archivo `.env` dentro de la carpeta `backend` con:
-
-```env
-PORT=5000
-MONGO_URI=mongodb://127.0.0.1:27017/netevent
-JWT_SECRET=clave_secreta_para_desarrollo
-
-
-### Backend
-
-Desde la carpeta "backend", ejecutar:
-
-cd backend
-npm install
-npm run dev
-
+git clone https://github.com/Rokklet/NetEvent.git
+cd NetEvent
