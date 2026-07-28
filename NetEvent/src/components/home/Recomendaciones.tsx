@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Card, Spin, message } from "antd";
 import EventCard from "../events/EventCard";
 import { useAuth } from "../../context/AuthContext";
+import { traerEventosTodos } from "../../services/EventService";
+import { traerMisInscripciones } from "../../services/InscriptionService";
 
 const Recomendaciones: React.FC = () => {
   const { user } = useAuth();
@@ -9,32 +11,27 @@ const Recomendaciones: React.FC = () => {
   const [eventos, setEventos] = useState<any[]>([]);
   const [misEventos, setMisEventos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     const cargarEventos = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/eventos");
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
-
+        const data = await traerEventosTodos();
         setEventos(data);
 
         // solo los participantes tienen inscripciones
         if (user?.role === "participant") {
           const token = localStorage.getItem("token");
+          if(!token) throw new Error("Debes inciar sesión")
 
-          const r2 = await fetch(
-            "http://localhost:5000/api/inscripciones/usuario",
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
+          const r2 = await traerMisInscripciones(token);
 
           const d2 = await r2.json();
           if (r2.ok) setMisEventos(d2);
         }
-      } catch (err) {
-        message.error("Error cargando recomendaciones");
+      } catch (error) {
+        const mes = error instanceof Error ? error.message : "Error cargando recomendaciones";
+        messageApi.error(mes);
       } finally {
         setLoading(false);
       }
@@ -55,6 +52,8 @@ const Recomendaciones: React.FC = () => {
 
     return (
       <Card title="Recomendaciones" style={{backgroundColor: '#f3f3f3'}}>
+        <div style={{ maxHeight: '400px', overflowY: 'auto', paddingRight: '8px' }}>
+        {contextHolder}
         {recomendados.map((ev) => (
           <EventCard
             key={ev._id}
@@ -67,6 +66,7 @@ const Recomendaciones: React.FC = () => {
             organizadorNombre={ev.organizador?.nombre}
           />
         ))}
+        </div>
       </Card>
     );
   }
@@ -74,19 +74,21 @@ const Recomendaciones: React.FC = () => {
   // si participante no tiene incripciones muestra todo
   if (misEventos.length === 0) {
     return (
-      <Card title="Recomendaciones">
-        {eventos.map((ev) => (
-          <EventCard
-            key={ev._id}
-            id={ev._id}
-            titulo={ev.titulo}
-            fecha={new Date(ev.fecha).toLocaleDateString()}
-            ubicacion={ev.ubicacion}
-            categorias={ev.tags}
-            organizadorLogo={ev.organizador?.foto}
-            organizadorNombre={ev.organizador?.nombre}
-          />
-        ))}
+      <Card title="Recomendaciones" style={{backgroundColor: '#f3f3f3'}}>
+        <div style={{ maxHeight: '400px', overflowY: 'auto', paddingRight: '8px' }}>
+          {eventos.map((ev) => (
+            <EventCard
+              key={ev._id}
+              id={ev._id}
+              titulo={ev.titulo}
+              fecha={new Date(ev.fecha).toLocaleDateString()}
+              ubicacion={ev.ubicacion}
+              categorias={ev.tags}
+              organizadorLogo={ev.organizador?.foto}
+              organizadorNombre={ev.organizador?.nombre}
+            />
+          ))}
+        </div>
       </Card>
     );
   }

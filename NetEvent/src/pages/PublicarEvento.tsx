@@ -15,6 +15,7 @@ import {
 import NewEventCarousel from "../components/events/NewEventCarousel";
 import NewEventTagSelector from "../components/events/NewEventTagSelector";
 import NewEventNewCharla from "../components/events/NewEventNewCharla";
+import { publicarEvento } from "../services/EventService";
 
 const { TextArea } = Input;
 const { Title } = Typography;
@@ -29,6 +30,7 @@ const PublicarEvento: React.FC = () => {
   const [charlas, setCharlas] = useState<any[]>([
     { id: Date.now(), persona: "", titulo: "", inicio: "", fin: "" }
   ]);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const agregarCharla = () => {
     setCharlas((prev) => [
@@ -47,62 +49,37 @@ const PublicarEvento: React.FC = () => {
     );
   };
 
-  
 
-  const publicarEvento = async () => {
+  const publicar = async () => {
     try {
       const token = localStorage.getItem("token");
-      if (!token) return message.error("No estás autenticado");
+      if (!token) throw new Error("Debes iniciar sesión para publicar este evento")
+      
+      const evento = {titulo, descripcion, fecha, ubicacion, tags, imagenes, charlas};
 
-      if (!titulo.trim()) return message.error("El evento necesita un título");
-      if (!descripcion.trim())
-        return message.error("Debe agregar una descripción");
-      if (!fecha) return message.error("Debe seleccionar una fecha");
+      await publicarEvento(evento, token);
 
-      const evento = {
-        titulo,
-        descripcion,
-        fecha,
-        ubicacion,
-        tags,
-        imagenes,
-        charlas
-      };
-
-      console.log("EVENTO A ENVIAR:", evento);
-
-      const response = await fetch("http://localhost:5000/api/eventos", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(evento)
-      });
-
-      const data = await response.json();
-
-      if (!response.ok)
-        throw new Error(data.message || "Error al publicar el evento");
-
-      message.success("Evento publicado con éxito");
+      await messageApi.success("Evento publicado con éxito");
       window.location.href = "/home";
-    } catch (err: any) {
-      message.error(err.message);
+      
+    } catch (error) {
+      const mes = error instanceof Error ? error.message : "Error al inciar sesión";
+      messageApi.error(mes);
     }
   };
 
-  
-
   return (
     <Card title="Publicar Nuevo Evento">
+      {contextHolder}
       <Flex vertical gap="15px">
-        <NewEventCarousel onImagesChange={setImagenes} />
-
+        <div style={{ maxHeight: '400px', paddingRight: '8px' }}>
+          <NewEventCarousel onImagesChange={setImagenes} />
+        </div>
         <Input
           placeholder="Título del Evento"
           value={titulo}
           onChange={(e) => setTitulo(e.target.value)}
+          style={{width: "60%"}}
         />
 
         <Row>
@@ -111,13 +88,13 @@ const PublicarEvento: React.FC = () => {
               placeholder="Descripción"
               showCount
               maxLength={250}
-              style={{ height: 150, resize: "none" }}
+              style={{ height: 150, resize: "none", margin: "10px" }}
               value={descripcion}
               onChange={(e) => setDescripcion(e.target.value)}
             />
             <br />
             <DatePicker
-              style={{ width: "100%" }}
+              style={{ width: "100%", margin: "10px" }}
               onChange={(d) => setFecha(d ? d.toISOString() : "")}
             />
           </Col>
@@ -129,9 +106,10 @@ const PublicarEvento: React.FC = () => {
               placeholder="Ubicación"
               value={ubicacion}
               onChange={(e) => setUbicacion(e.target.value)}
+              style={{ margin: "10px"}}
             />
             <br />
-            <NewEventTagSelector onChange={setTags} />
+            <NewEventTagSelector onChange={setTags}  />
           </Col>
         </Row>
 
@@ -165,8 +143,8 @@ const PublicarEvento: React.FC = () => {
           type="primary"
           size="large"
           block
-          onClick={publicarEvento}
-          style={{ marginTop: 20 }}
+          onClick={publicar}
+          style={{ marginTop: 20, width: "60%", margin: "20px auto 0"}}
         >
           Publicar evento
         </Button>

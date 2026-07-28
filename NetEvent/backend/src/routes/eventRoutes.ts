@@ -27,18 +27,20 @@ async (req, res) => {
   if (!req.user) {
     throw new AppError("Usuario no autenticado", 401)
   };
-    const { titulo, descripcion, fecha, ubicacion, tags, imagenes, charlas } = req.body;
 
-    const nuevoEvento = new Event({titulo, descripcion, fecha, ubicacion, tags, imagenes, charlas, organizador: req.user.id,});
 
-    await nuevoEvento.save();
+  const { titulo, descripcion, fecha, ubicacion, tags, imagenes, charlas } = req.body;
 
-    res.status(201).json({
-      message: "Evento publicado con éxito",
-      evento: nuevoEvento,
-    });
-  
-  }
+  const nuevoEvento = new Event({titulo, descripcion, fecha, ubicacion, tags, imagenes, charlas, organizador: req.user.id,});
+
+  await nuevoEvento.save();
+
+  res.status(201).json({
+    message: "Evento publicado con éxito",
+    evento: nuevoEvento,
+  });
+
+}
 ))
 
 

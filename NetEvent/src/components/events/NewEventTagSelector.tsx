@@ -6,7 +6,7 @@ interface Props {
 }
 
 const NewEventTagSelector: React.FC<Props> = ({ onChange }) => {
-  const tagsData = ["Seguridad", "Networking", "Cloud", "Firewalls", "Dispositivos"];
+  const tagsData = ["Seguridad", "Networking", "Cloud", "Firewalls", "Dispositivos", "Empresarial", "Ronda Empresarial", "StartUp"];
 
   const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
 
@@ -21,7 +21,7 @@ const NewEventTagSelector: React.FC<Props> = ({ onChange }) => {
   };
 
   return (
-    <Card title="Categorías">
+    <Card title="Categorías" style={{ margin: "10px"}}>
       <Flex gap={4} wrap align="center">
         {tagsData.map((tag) => (
           <Tag.CheckableTag

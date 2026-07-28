@@ -27,11 +27,21 @@ export const verificarInscripcion = async (token: string, eventId: string) => {
         }
     );
 
-    if(!response.ok) {
-        throw new Error("Error al verificar el estado del participantes")
-    }
+    const data = await response.json();
+
+    if(!response.ok) throw new Error(data.message || "Error al verificar el estado del participantes")
+
+    return data.inscripto;
+}
+
+export const traerMisInscripciones = async (token: string) => {
+    const response = await fetch("http://localhost:5000/api/inscripciones/usuario", {
+        headers: { Authorization: `Bearer ${token}` }
+    });
 
     const data = await response.json();
 
-    return data.inscripto;
+    if(!response.ok) throw new Error(data.message || "Error al cargar tus inscripciones")
+
+    return data;
 }

@@ -15,6 +15,7 @@ const Evento: React.FC = () => {
 
   const [evento, setEvento] = useState<any>(null);
   const [inscripto, setInscripto] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
 
   useEffect(() => {
@@ -26,7 +27,8 @@ const Evento: React.FC = () => {
         const data = await traerEvento(id);
         setEvento(data);
       }catch(error){
-        message.error("No se pudo cargar el evento");
+        const mes = error instanceof Error ? error.message : "No se pudo cargar el evento";
+        messageApi.error(mes);
       }
     };
 
@@ -47,7 +49,8 @@ const Evento: React.FC = () => {
         const estado = await verificarInscripcion(token, id);
         setInscripto(estado);
       }catch(error){
-        message.error("No se puede verificar la inscripción")
+        const mes = error instanceof Error ? error.message : "No se puede verificar la inscripción";
+        messageApi.error(mes);
       };
     }
 
@@ -64,7 +67,7 @@ const Evento: React.FC = () => {
     const token = localStorage.getItem("token");
       
     if (!token){
-      message.error("Debés iniciar sesión");
+      messageApi.error("Debés iniciar sesión");
       return;
     };
     
@@ -73,10 +76,11 @@ const Evento: React.FC = () => {
 
       setInscripto(true);
 
-      message.success(res.message);
+      messageApi.success(res.message);
 
     } catch (error) {
-        message.error("Error al Inscribirte");
+      const mes = error instanceof Error ? error.message : "Error al Inscribirte";
+      messageApi.error(mes);
     }
   };
 
@@ -84,16 +88,19 @@ const Evento: React.FC = () => {
     try {
       const token = localStorage.getItem("token");
 
-      if (!token) throw new Error("Debe iniciar sesión")
+      if (!token) throw messageApi.error("Error al descargar PDF");
 
       await obtenerPDF(token, id);
 
+      messageApi.success("Descargando listado de inscriptos")
+
     } catch (error) {
-      message.error("Error al descargar PDF");
+      const mes = error instanceof Error ? error.message : "Error al descargar PDF";
+      messageApi.error(mes);
     }
   };
 
-  if (!evento) return <p>Cargando...</p>;
+  if (!evento) return <>{contextHolder} <p>Cargando...</p>;</>
 
   const esOrganizadorDueño =
     user &&
@@ -113,13 +120,14 @@ const Evento: React.FC = () => {
 
   return (
     <Card title="Detalles del Evento">
+    {contextHolder}  
       <Space direction="vertical" style={{ width: "100%" }} size="large">
-        
+          
         <ViewEventCarousel images={evento.imagenes || []} />
 
         {/* Título */}
         <Title level={2}>{evento.titulo}</Title>
-
+        
         <Row gutter={16}>
           <Col flex={3}>
             <Paragraph>{evento.descripcion}</Paragraph>

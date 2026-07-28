@@ -2,21 +2,22 @@ import React, { useEffect, useState } from "react";
 import { Input, Card, Spin, message } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import EventCard from "../events/EventCard";
+import { traerEventosTodos } from "../../services/EventService";
 
 const BuscadorEventos: React.FC = () => {
   const [busqueda, setBusqueda] = useState("");
   const [eventos, setEventos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     const cargarEventos = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/eventos");
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message);
+        const data = await traerEventosTodos();
         setEventos(data);
-      } catch (err) {
-        message.error("Error cargando eventos");
+      } catch (error) {
+        const mes = error instanceof Error ? error.message : "Error al inciar sesión";
+        messageApi.error(mes);
       } finally {
         setLoading(false);
       }
@@ -36,6 +37,8 @@ const BuscadorEventos: React.FC = () => {
 
   return (
     <Card title="Buscar eventos" style={{backgroundColor: '#f3f3f3'}}>
+      {contextHolder}
+
       <Input
         prefix={<SearchOutlined />}
         placeholder="Buscar por nombre o categoría"
@@ -45,7 +48,7 @@ const BuscadorEventos: React.FC = () => {
         onChange={(e) => setBusqueda(e.target.value)}
         style={{ marginBottom: 20 }}
       />
-
+      <div style={{ maxHeight: '340px', overflowY: 'auto', paddingRight: '8px' }}>
       {loading ? (
         <Spin />
       ) : busqueda.length === 0 ? (
@@ -66,6 +69,7 @@ const BuscadorEventos: React.FC = () => {
           />
         ))
       )}
+      </div>
     </Card>
   );
 };

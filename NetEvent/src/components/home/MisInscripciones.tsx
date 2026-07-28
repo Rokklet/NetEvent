@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Card, Spin, message } from "antd";
 import EventCard from "../events/EventCard";
 import { useAuth } from "../../context/AuthContext";
+import { traerMisInscripciones } from "../../services/InscriptionService";
 
 const MisInscripciones: React.FC = () => {
   const { user } = useAuth();
   const [eventos, setEventos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     if (!user || user.role !== "participant") {
@@ -18,20 +20,15 @@ const MisInscripciones: React.FC = () => {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await fetch("http://localhost:5000/api/inscripciones/usuario", {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        if (!token) throw new Error("Debes iniciar sesión")
+
         
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message);
-        }
+        const data = await traerMisInscripciones(token);
 
         setEventos(data);
-      } catch (err: any) {
-        message.error("Error cargando tus inscripciones");
+      } catch (error) {
+        const mes = error instanceof Error ? error.message : "Error cargando tus eventos publicados";
+        messageApi.error(mes);
       } finally {
         setLoading(false);
       }
@@ -47,6 +44,7 @@ const MisInscripciones: React.FC = () => {
 
   return (
     <Card title="Mis Inscripciones" style={{backgroundColor: '#f3f3f3'}}>
+      {contextHolder}
       {eventos.length === 0 ? (
         <p>No estás inscripto a ningún evento.</p>
       ) : (

@@ -3,27 +3,19 @@ import { Card, Form, Input, Button, Typography, message, Divider } from "antd";
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
 import { useAuth } from "../context/AuthContext";
 import "../styles/global.css";
+import { loguearse } from "../services/AuthService";
 
 const { Title } = Typography;
 
 const Login: React.FC = () => {
   const { setUser } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const onFinish = async (values: any) => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Error al iniciar sesión");
-      }
+      const data = await loguearse(values);
 
       // Guarda token y usuario en localStorage
       localStorage.setItem("token", data.token);
@@ -43,7 +35,7 @@ const Login: React.FC = () => {
         _id: data.user._id,
       });
 
-      message.success(`Bienvenido, ${data.user.nombre}`);
+      messageApi.success(`Bienvenido, ${data.user.nombre}`);
 
       // Redirección según rol
       if (data.user.role === "organizer") {
@@ -53,8 +45,9 @@ const Login: React.FC = () => {
       } else {
         window.location.href = "/";
       }
-    } catch (error: any) {
-      message.error(error.message);
+    } catch (error) {
+      const mes = error instanceof Error ? error.message : "Error al inciar sesión";
+      messageApi.error(mes);
     } finally {
       setLoading(false);
     }
@@ -62,6 +55,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="login-container">
+      {contextHolder}
       <Card className="login-card">
         <div className="login-title">
           <Title level={3}>Iniciar sesión</Title>

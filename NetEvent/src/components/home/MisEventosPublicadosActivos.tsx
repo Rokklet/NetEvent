@@ -4,7 +4,7 @@ import EventCard from "../events/EventCard";
 import { useAuth } from "../../context/AuthContext";
 import { traerMisEventos } from "../../services/EventService";
 
-const MisEventosPublicados: React.FC = () => {
+const MisEventosPublicadosActivos: React.FC = () => {
   const { user } = useAuth();
 
   const [eventos, setEventos] = useState<any[]>([]);
@@ -41,12 +41,13 @@ const MisEventosPublicados: React.FC = () => {
     
     <Card title="Mis eventos publicados" style={{backgroundColor: '#f3f3f3'}}>
       {contextHolder}
-      <div style={{ maxHeight: '400px', overflowY: 'auto', paddingRight: '8px' }}>
+      <div style={{ display: "flex", gap: 16,  overflowX: 'auto', maxHeight: '175px', flexWrap: "nowrap", paddingBottom: 8}} >
       {eventos.length === 0 ? (
         <p>No tenés eventos publicados.</p>
       ) : (
         eventos.map((ev) => (
-          <EventCard
+          <div style={{ minWidth: 240, flexShrink: 0 }}>
+            <EventCard
             key={ev._id}
             id={ev._id}
             titulo={ev.titulo}
@@ -56,6 +57,7 @@ const MisEventosPublicados: React.FC = () => {
             organizadorLogo={user?.foto}
             organizadorNombre={user?.nombre}
           />
+          </div>
         ))
       )}
       </div>
@@ -63,4 +65,4 @@ const MisEventosPublicados: React.FC = () => {
   );
 };
 
-export default MisEventosPublicados;
+export default MisEventosPublicadosActivos;

@@ -6,28 +6,25 @@ import BuscadorEventos from "../components/home/BuscadorEventos";
 import MisInscripciones from "../components/home/MisInscripciones";
 import MisEventosPublicados from "../components/home/MisEventosPublicados";
 import HomeEventCarousel from "../components/events/HomeEventCarousel";
+import { traerEventosTodos } from "../services/EventService";
+import MisEventosPublicadosActivos from "../components/home/MisEventosPublicadosActivos";
 
 const Home: React.FC = () => {
   const { user } = useAuth();
   const role = user?.role || "guest";
 
-    const [eventos, setEventos] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+  const [eventos, setEventos] = useState<any[]>([]);
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     const cargarEventos = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/eventos");
-        const data = await res.json();
-
-        if (!res.ok) throw new Error(data.message);
-
+        const data = await traerEventosTodos();
         setEventos(data);
-      } catch (err) {
-        message.error("Error cargando eventos");
-      } finally {
-        setLoading(false);
-      }
+      } catch (error) {
+        const mes = error instanceof Error ? error.message : "Error cargando eventos";
+        messageApi.error(mes);
+      } 
     };
 
     cargarEventos();
@@ -35,8 +32,13 @@ const Home: React.FC = () => {
 
   return (
     <>
+      {contextHolder}
       {eventos.length > 0 && (
         <HomeEventCarousel eventos={eventos} />
+      )}
+
+      {role === "organizer" && (
+        <MisEventosPublicadosActivos />
       )}
 
 
@@ -57,9 +59,6 @@ const Home: React.FC = () => {
             </>
           )}
 
-          {role === "organizer" && (
-            <MisEventosPublicados />
-          )}
 
           {role === "guest" && (
             <BuscadorEventos />
