@@ -6,6 +6,8 @@ const {
 const ids = {
   organizer: new ObjectId("670000000000000000000001"),
 
+  organizerTwo: new ObjectId("670000000000000000000004"),
+
   participantOne: new ObjectId("670000000000000000000002"),
 
   participantTwo: new ObjectId("670000000000000000000003"),
@@ -13,6 +15,8 @@ const ids = {
   eventOne: new ObjectId("670000000000000000000101"),
 
   eventTwo: new ObjectId("670000000000000000000102"),
+
+  eventThree: new ObjectId("670000000000000000000103"),
 
   inscriptionOne: new ObjectId("670000000000000000000201"),
 
@@ -44,6 +48,29 @@ module.exports = {
               descripcion:
                 "Organizador creado por la migración inicial",
               foto: "/seed/organizador1.webp",
+              createdAt: now,
+              updatedAt: now,
+            },
+          },
+          upsert: true,
+        },
+      },
+      {
+        updateOne: {
+          filter: {
+            _id: ids.organizerTwo,
+          },
+          update: {
+            $setOnInsert: {
+              nombre:
+                "Empresa Organizadora 2 Demo",
+              correo:
+                "organizadorTwo@netevent.demo",
+              password: passwordHash,
+              role: "organizer",
+              descripcion:
+                "Organizador creado por la migración inicial",
+              foto: "/seed/organizador2.webp",
               createdAt: now,
               updatedAt: now,
             },
@@ -199,6 +226,51 @@ module.exports = {
           upsert: true,
         },
       },
+      {
+        updateOne: {
+          filter: {
+            _id: ids.eventThree,
+          },
+          update: {
+            $setOnInsert: {
+              titulo:
+                "Evento de Tecnología Emergente",
+              descripcion:
+                "Evento demo para empresas y profesionales del sector tecnológico.",
+              fecha: new Date(
+                "2026-12-10T18:00:00.000Z"
+              ),
+              ubicacion:
+                "Centro de Eventos central",
+              tags: [
+                "Tecnología",
+                "Software",
+                "Networking",
+              ],
+              imagenes: [
+                "/seed/principal_evento3.webp",
+                "/seed/charla1_evento3.webp",
+              ],
+              charlas: [
+                {
+                  persona:
+                    "CEO Demo",
+                  titulo:
+                    "Avance digital",
+                  inicio: "18:30",
+                  fin: "19:15",
+                },
+              ],
+              organizador:
+                ids.organizerTwo,
+              estado: true,
+              createdAt: now,
+              updatedAt: now,
+            },
+          },
+          upsert: true,
+        },
+      },
     ]);
 
     await db.collection("inscriptions").bulkWrite([
@@ -283,6 +355,7 @@ module.exports = {
         $in: [
           ids.eventOne,
           ids.eventTwo,
+          ids.eventThree,
         ],
       },
     });
@@ -291,6 +364,7 @@ module.exports = {
       _id: {
         $in: [
           ids.organizer,
+          ids.organizerTwo,
           ids.participantOne,
           ids.participantTwo,
         ],

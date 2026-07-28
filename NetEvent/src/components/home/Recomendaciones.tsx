@@ -18,17 +18,14 @@ const Recomendaciones: React.FC = () => {
       try {
         const data = await traerEventosTodos();
         setEventos(data);
-
         // solo los participantes tienen inscripciones
         if (user?.role === "participant") {
           const token = localStorage.getItem("token");
           if(!token) throw new Error("Debes inciar sesión")
-
           const r2 = await traerMisInscripciones(token);
-
-          const d2 = await r2.json();
-          if (r2.ok) setMisEventos(d2);
+          setMisEventos(r2);
         }
+        
       } catch (error) {
         const mes = error instanceof Error ? error.message : "Error cargando recomendaciones";
         messageApi.error(mes);
@@ -36,9 +33,12 @@ const Recomendaciones: React.FC = () => {
         setLoading(false);
       }
     };
+    
 
     cargarEventos();
   }, [user]);
+
+  
 
   if (loading) return <Spin />;
 
