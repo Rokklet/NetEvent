@@ -53,7 +53,7 @@ inscribirse e interactuar mediante comentarios.
 
 - Node.js 20 o superior.
 - npm.
-- MongoDB instalado y en ejecución.
+- MongoDB instalado y en ejecución apuntando al puerto :27017
 
 ## Instalación
 
