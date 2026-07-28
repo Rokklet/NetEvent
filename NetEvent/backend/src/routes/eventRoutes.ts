@@ -31,7 +31,7 @@ async (req, res) => {
 
   const { titulo, descripcion, fecha, ubicacion, tags, imagenes, charlas } = req.body;
 
-  const nuevoEvento = new Event({titulo, descripcion, fecha, ubicacion, tags, imagenes, charlas, organizador: req.user.id,});
+  const nuevoEvento = new Event({titulo, descripcion, fecha, ubicacion, tags, imagenes, charlas, organizador: req.user.id, estado: true});
 
   await nuevoEvento.save();
 
@@ -66,6 +66,24 @@ router.get("/:id", asyncHandler(
 }
 ) );
 
+/* Finalizar evento */
+router.patch("/:id",auth, requireRole(["organizer"]), asyncHandler<AuthRequest>(
+  async (req, res) => {
+    const {id} = req.params;
+    const {estado} = req.body;
 
+    if(typeof estado != "boolean") throw new AppError("El valor entregado no es valido", 400);
+
+    const evento = await Event.findByIdAndUpdate(
+      id,
+      {estado},
+      { new: true, runValidators: true}
+    );
+
+    if(!evento) throw new AppError("Evento no encontrado", 404);
+
+    return res.status(200).json(evento.estado);
+  }
+))
 
 export default router;

@@ -4,7 +4,6 @@ import { useAuth } from "../context/AuthContext";
 import Recomendaciones from "../components/home/Recomendaciones";
 import BuscadorEventos from "../components/home/BuscadorEventos";
 import MisInscripciones from "../components/home/MisInscripciones";
-import MisEventosPublicados from "../components/home/MisEventosPublicados";
 import HomeEventCarousel from "../components/events/HomeEventCarousel";
 import { traerEventosTodos } from "../services/EventService";
 import MisEventosPublicadosActivos from "../components/home/MisEventosPublicadosActivos";

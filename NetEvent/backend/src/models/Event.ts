@@ -16,6 +16,7 @@ export interface IEvent extends Document {
   imagenes: string[];
   charlas: ICharla[];
   organizador: mongoose.Types.ObjectId;
+  estado: boolean;
 }
 
 const CharlaSchema = new Schema<ICharla>({
@@ -34,6 +35,7 @@ const EventSchema = new Schema<IEvent>({
   imagenes: [{ type: String }],
   charlas: [CharlaSchema],
   organizador: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  estado: {type: Boolean, required: true}
 });
 
 export default mongoose.model<IEvent>("Event", EventSchema);

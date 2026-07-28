@@ -68,8 +68,7 @@ export const publicarEvento = async (evento: {
 
 export const inscribirUsuario = async (eventId: string, token:string): Promise<ApiMessageResponse> => {
 
-    const res = await fetch(
-        `http://localhost:5000/api/inscripciones/${eventId}`,
+    const res = await fetch(`http://localhost:5000/api/inscripciones/${eventId}`,
         {
             method: "POST",
             headers: { Authorization : `Bearer ${token}`}
@@ -79,6 +78,24 @@ export const inscribirUsuario = async (eventId: string, token:string): Promise<A
     const data: ApiMessageResponse = await res.json();
 
     if (!res.ok) throw new Error(data.message || "Error al incribirse");
+
+    return data;
+}
+
+export const finalizarEvento = async (eventId: string, token: string, estado: boolean): Promise<any> => {
+    
+    const res = await fetch(`http://localhost:5000/api/eventos/${eventId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ estado }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.message || "No se pudo finalizar el evento")
 
     return data;
 }

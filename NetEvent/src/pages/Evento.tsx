@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {  Card,Button,message,Row,Col,Divider,Typography,Tag,Table,Space,Result,} from "antd";
+import {  Card,Button,message,Row,Col,Divider,Typography,Tag,Table,Space,Result, notification,} from "antd";
 import { useAuth } from "../context/AuthContext";
 import ViewEventCarousel from "../components/events/ViewEventCarousel";
 import CommentSection from "../components/events/CommentSection";
-import { inscribirUsuario, traerEvento } from "../services/EventService";
+import { finalizarEvento, inscribirUsuario, traerEvento } from "../services/EventService";
 import { obtenerPDF, verificarInscripcion } from "../services/InscriptionService";
 
 const { Title, Paragraph } = Typography;
@@ -14,9 +14,10 @@ const Evento: React.FC = () => {
   const { user } = useAuth();
 
   const [evento, setEvento] = useState<any>(null);
+  const [activo, setActivo] = useState(Boolean);
   const [inscripto, setInscripto] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-
+  const [api, notificacion] = notification.useNotification();
 
   useEffect(() => {
 
@@ -25,11 +26,15 @@ const Evento: React.FC = () => {
     const fetchEvento = async () => {
       try{
         const data = await traerEvento(id);
+        console.log(data.estado)
+        setActivo(data.estado);
+        console.log(activo)
         setEvento(data);
       }catch(error){
         const mes = error instanceof Error ? error.message : "No se pudo cargar el evento";
         messageApi.error(mes);
       }
+
     };
 
     const consultarInscripcion = async () => {
@@ -101,8 +106,9 @@ const Evento: React.FC = () => {
   };
 
   if (!evento) return <>{contextHolder} <p>Cargando...</p>;</>
-
-  const esOrganizadorDueño =
+  
+  
+  const esOrganizadorDueño =  
     user &&
     user.role === "organizer" &&
     evento.organizador &&
@@ -118,8 +124,49 @@ const Evento: React.FC = () => {
 
   const charlasData = evento.charlas || [];
 
+  const finalizar = async () => {
+    const token = localStorage.getItem("token");
+      
+    if (!token){
+      messageApi.error("Debés iniciar sesión");
+      return;
+    };
+
+    try{
+      const res = await finalizarEvento(id,token,false);
+      setActivo(res);
+    }catch(error){
+      const mes = error instanceof Error ? error.message : "Error al descargar PDF";
+      messageApi.error(mes);
+    }
+    
+    api.destroy()
+  }
+
+  const openNotification = () => {
+    const key = `open${Date.now()}`;
+    const btn = (
+      <Space>
+        <Button type="link" size="small" onClick={() => api.destroy()}>
+          Cancelar
+        </Button>
+        <Button type="primary" size="small" onClick={finalizar}>
+          Confirmar
+        </Button>
+      </Space>
+    );
+    api.open({
+      message: 'Advertencia',
+      description:
+        'Una vez finalizado el evento no podrá volver a abrirlo. Los usuarios ya no se podrán incribír al evento pero podrán seguir comentando',
+      btn,
+      key,
+    });
+  };
+
   return (
     <Card title="Detalles del Evento">
+    {notificacion}
     {contextHolder}  
       <Space direction="vertical" style={{ width: "100%" }} size="large">
           
@@ -185,18 +232,38 @@ const Evento: React.FC = () => {
         <Space>
           {/* Botón de inscripción */}
           {user?.role === "participant" && (
-            <Button
-              type={inscripto ? "default" : "primary"}
-              disabled={inscripto}
-              onClick={!inscripto ? suscripcion : undefined}
-            >
-              {inscripto ? "Ya inscripto" : "Inscribirme"}
-            </Button>
+            !activo ? 
+             <Button
+                type={inscripto ? "default" : "primary"}
+                disabled={true}
+              >
+                Evento Finalizado
+              </Button>
+              :
+              <Button
+                type={inscripto ? "default" : "primary"}
+                disabled={inscripto}
+                onClick={!inscripto ? suscripcion : undefined}
+              >
+                {inscripto ? "Ya inscripto" : "Inscribirme"}
+              </Button>
           )}
 
           {/* Botón PDF para organizador dueño */}
           {esOrganizadorDueño && (
-            <Button onClick={descargarPDF}>Descargar lista PDF</Button>
+            <Row justify="start" gutter={15}>
+              <Col>
+                <Button onClick={descargarPDF}>Descargar lista PDF</Button>
+              </Col>
+              <Col>
+               <Button type="primary" 
+               disabled={!activo} 
+               danger 
+               onClick={activo ? openNotification : undefined}>
+                {activo ? "Finalizar Evento" : "Evento Finalizado"} 
+              </Button>
+              </Col>
+            </Row>
           )}
         </Space>
       </Space>

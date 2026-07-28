@@ -146,6 +146,7 @@ module.exports = {
               ],
               organizador:
                 ids.organizer,
+              estado: true,
               createdAt: now,
               updatedAt: now,
             },
@@ -190,6 +191,7 @@ module.exports = {
               ],
               organizador:
                 ids.organizer,
+              estado: true,
               createdAt: now,
               updatedAt: now,
             },
