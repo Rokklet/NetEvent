@@ -1,4 +1,4 @@
-
+import { API_URL } from "../config/env";
 
 export const crearComment = async (eventId: string, texto: string) => {
     
@@ -9,7 +9,7 @@ export const crearComment = async (eventId: string, texto: string) => {
     };
 
 
-    const response = await fetch(`http://localhost:5000/api/eventos/${eventId}/comments`, {
+    const response = await fetch(`${API_URL}/eventos/${eventId}/comments`, {
         method: "POST",
         headers: {"Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
@@ -28,7 +28,7 @@ export const crearComment = async (eventId: string, texto: string) => {
 };
 
 export const cargarComentarios = async (eventId: string ) => {
-    const res = await fetch(`http://localhost:5000/api/eventos/${eventId}/comments`);
+    const res = await fetch(`${API_URL}/eventos/${eventId}/comments`);
 
     if (!res.ok) throw new Error("Error al cargar los comentarios")
 

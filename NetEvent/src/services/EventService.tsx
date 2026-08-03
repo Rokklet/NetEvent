@@ -1,10 +1,18 @@
+import { API_URL } from "../config/env";
 
 interface ApiMessageResponse {
   message: string;
 }
 
+interface Charla {
+    id: string, 
+    persona: string, 
+    titulo: string, 
+    inicio: string, 
+    fin: string}
+
 export const traerEventosTodos = async (): Promise<any> => {
-    const res = await fetch("http://localhost:5000/api/eventos");
+    const res = await fetch(`${API_URL}/eventos`);
 
     const data = await res.json();
 
@@ -14,7 +22,7 @@ export const traerEventosTodos = async (): Promise<any> => {
 }
 
 export const traerEvento = async (eventId: string): Promise<any> => {
-    const res = await fetch(`http://localhost:5000/api/eventos/${eventId}`);
+    const res = await fetch(`${API_URL}/eventos/${eventId}`);
 
     const data = await res.json();
 
@@ -24,7 +32,7 @@ export const traerEvento = async (eventId: string): Promise<any> => {
 }
 
 export const traerMisEventos = async (token: string): Promise<any> => {
-    const res = await fetch("http://localhost:5000/api/eventos/mis-eventos", {
+    const res = await fetch(`${API_URL}/eventos/mis-eventos`, {
         headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -42,16 +50,22 @@ export const publicarEvento = async (evento: {
     ubicacion: string,
     tags: string[],
     imagenes: string [],
-    charlas: any[]
+    charlas: Charla[]
 }, token: string): Promise<any> => {
 
     if (!token) throw new Error("Debe estar autenticado para publicar un evento")
     if (!evento.titulo.trim()) throw new Error("Debe colocarle un titulo al evento")
     if (!evento.descripcion.trim()) throw new Error("Debe agregar una descripción al evento")
-    if (!evento.fecha) throw new Error("Debe seleccionar una fecha al evento")
-    if (!evento.charlas) throw new Error("Debes ingresar el cronograma de charlas")
+    if (!evento.fecha.trim()) throw new Error("Debe seleccionar una fecha al evento")
+    if (!evento.ubicacion.trim()) throw new Error("Debe ingresar la ubicación de su evento")
+    if (evento.tags.length < 1) throw new Error("Debe selecciónar al menos 1 tag para el evento")
+    const todosConfirmados = evento.charlas.every(c => c.persona != "" && c.titulo != "" && c.inicio != "" && c.fin != "");
 
-    const res = await fetch("http://localhost:5000/api/eventos", {
+    if (!todosConfirmados) throw new Error("Las charlas no pueden tener campos vacios")
+
+    
+    
+    const res = await fetch(`${API_URL}/eventos`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +82,7 @@ export const publicarEvento = async (evento: {
 
 export const inscribirUsuario = async (eventId: string, token:string): Promise<ApiMessageResponse> => {
 
-    const res = await fetch(`http://localhost:5000/api/inscripciones/${eventId}`,
+    const res = await fetch(`${API_URL}/inscripciones/${eventId}`,
         {
             method: "POST",
             headers: { Authorization : `Bearer ${token}`}
@@ -84,7 +98,7 @@ export const inscribirUsuario = async (eventId: string, token:string): Promise<A
 
 export const finalizarEvento = async (eventId: string, token: string, estado: boolean): Promise<any> => {
     
-    const res = await fetch(`http://localhost:5000/api/eventos/${eventId}`, {
+    const res = await fetch(`${API_URL}/eventos/${eventId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

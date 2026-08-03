@@ -1,6 +1,8 @@
+import { API_URL } from "../config/env";
+
 export const obtenerPDF = async (token: string, eventId: string) => {
     const response = await fetch(
-        `http://localhost:5000/api/inscripciones/${eventId}/inscriptos/pdf`,
+        `${API_URL}/inscripciones/${eventId}/inscriptos/pdf`,
         {
             headers: { Authorization: `Bearer ${token}`},
         }
@@ -21,7 +23,7 @@ export const obtenerPDF = async (token: string, eventId: string) => {
 }
 
 export const verificarInscripcion = async (token: string, eventId: string) => {
-    const response = await fetch(`http://localhost:5000/api/inscripciones/${eventId}/estado`,
+    const response = await fetch(`${API_URL}/inscripciones/${eventId}/estado`,
         {
             headers: { Authorization: `Bearer ${token}`},
         }
@@ -35,7 +37,7 @@ export const verificarInscripcion = async (token: string, eventId: string) => {
 }
 
 export const traerMisInscripciones = async (token: string) => {
-    const response = await fetch("http://localhost:5000/api/inscripciones/usuario", {
+    const response = await fetch(`${API_URL}/inscripciones/usuario`, {
         headers: { Authorization: `Bearer ${token}` }
     });
 

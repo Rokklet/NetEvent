@@ -91,6 +91,7 @@ const PublicarEvento: React.FC = () => {
               style={{ height: 150, resize: "none", margin: "10px" }}
               value={descripcion}
               onChange={(e) => setDescripcion(e.target.value)}
+              required
             />
             <br />
             <DatePicker
@@ -107,6 +108,7 @@ const PublicarEvento: React.FC = () => {
               value={ubicacion}
               onChange={(e) => setUbicacion(e.target.value)}
               style={{ margin: "10px"}}
+              required
             />
             <br />
             <NewEventTagSelector onChange={setTags}  />

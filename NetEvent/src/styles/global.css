@@ -187,3 +187,22 @@ body {
 }
 
 /*carruseles*/
+.event-carousel-container {
+  position: relative;
+}
+
+.event-carousel-add,
+.event-carousel-clear {
+  position: absolute;
+  z-index: 10;
+}
+
+.event-carousel-add {
+  bottom: 10px;
+  right: 10px;
+}
+
+.event-carousel-clear {
+  bottom: 10px;
+  right: 60px;
+}

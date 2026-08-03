@@ -28,7 +28,6 @@ async (req, res) => {
     throw new AppError("Usuario no autenticado", 401)
   };
 
-
   const { titulo, descripcion, fecha, ubicacion, tags, imagenes, charlas } = req.body;
 
   const nuevoEvento = new Event({titulo, descripcion, fecha, ubicacion, tags, imagenes, charlas, organizador: req.user.id, estado: true});

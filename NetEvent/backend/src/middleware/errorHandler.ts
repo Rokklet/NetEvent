@@ -23,7 +23,7 @@ export const errorHandler: ErrorRequestHandler = (
   //Delegar errores de PDF a Express
   if (res.headersSent) {
   return next(error);
-    }
+  }
 
   if (error instanceof AppError) {
     return res.status(error.statusCode).json({
