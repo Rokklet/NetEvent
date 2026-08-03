@@ -1,5 +1,6 @@
 import React from "react";
-import { Carousel, Card } from "antd";
+import { Carousel, Card, Result } from "antd";
+import { SmileOutlined } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
 import "../../styles/global.css";
 
@@ -14,10 +15,7 @@ const HomeEventCarousel: React.FC<HomeEventCarouselProps> = ({ eventos }) => {
     <div style={{ marginBottom: 30 }}>
       <Carousel arrows autoplay draggable dotPosition="bottom">
         {eventos.map((ev) => {
-          const imagenPrincipal =
-            ev.imagenes?.[0] ??
-            "https://via.placeholder.com/900x400?text=Evento+sin+imagen";
-
+          const tienePortada = ev.imagenes[0] || ev.imagenes.lenght > 0;
           return (
             <div
               key={ev._id}
@@ -38,14 +36,14 @@ const HomeEventCarousel: React.FC<HomeEventCarouselProps> = ({ eventos }) => {
                   backgroundColor: '#f3f3f3'
                 }}
                 cover={
-                  <img
-                    src={imagenPrincipal}
-                    style={{
-                      width: "100%",
-                      height: 350,
-                      objectFit: "cover",
-                    }}
-                  />
+                  tienePortada ? 
+                  (
+                  <img src={ev.imagenes[0]} style={{width: "100%",height: 350,objectFit: "cover",}}/>)
+                    :
+                  (
+                  <Result icon={<SmileOutlined />} title="Este evento no posee una portada"/>
+                  )
+                  
                 }
               >
                 <Card.Meta

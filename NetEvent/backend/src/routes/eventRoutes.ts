@@ -75,7 +75,10 @@ router.patch("/:id",auth, requireRole(["organizer"]), asyncHandler<AuthRequest>(
     if(typeof estado != "boolean") throw new AppError("El valor entregado no es valido", 400);
 
     const evento = await Event.findByIdAndUpdate(
-      id,
+      {
+        _id: id,
+        organizador: req.user?.id,
+      },
       {estado},
       { new: true, runValidators: true}
     );

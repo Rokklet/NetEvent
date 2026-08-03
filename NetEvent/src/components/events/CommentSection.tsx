@@ -1,6 +1,7 @@
 
 import { useState, useEffect} from "react";
-import { Card, Divider, Flex, Button, Space, Input, Avatar, Row, Col, Typography, message} from "antd";
+import { Card, Divider, Flex, Button, Space, Input, Avatar, Row, Col, Typography, message, Result} from "antd";
+import { SmileOutlined } from '@ant-design/icons';
 import { cargarComentarios, crearComment } from "../../services/CommentService";
 //import { SpaceCompactItemContext } from "antd/es/space/Compact";
 import { useParams } from "react-router-dom";
@@ -70,8 +71,6 @@ const CommentSection = () => {
 
     return(
         <Card>   
-
-
             {user?.role === "participant" && (
                 <>
                 <Space.Compact style={{width:"100%"}}>
@@ -93,6 +92,8 @@ const CommentSection = () => {
             
 
             <div style={{ maxHeight: '400px', overflowY: 'auto', paddingRight: '8px' }}>
+            {comments != null && comments.length > 0 ? (
+                
                 <Flex gap="small" vertical>
                     {comments.map(comment => (
                     <Card type="inner" 
@@ -119,7 +120,14 @@ const CommentSection = () => {
                         </Row>
                     </Card>
                     ))}
-                </Flex>
+                </Flex>)
+                :
+                (<Result
+                    icon={<SmileOutlined />}
+                    title="Aún no hay comentarios"
+                />)
+            }
+                
             </div>
 
 

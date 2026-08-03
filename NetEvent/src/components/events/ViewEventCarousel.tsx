@@ -1,5 +1,6 @@
 import React from "react";
-import { Carousel } from "antd";
+import { Carousel, Result } from "antd";
+import { SmileOutlined } from '@ant-design/icons';
 import "../../styles/global.css";
 
 interface Props {
@@ -12,9 +13,9 @@ const ViewEventCarousel: React.FC<Props> = ({ images }) => {
       <Carousel arrows dots>
         {images.length === 0 ? (
           <div className="event-carousel-slide">
-            <img
-              src="https://via.placeholder.com/800x400?text=Sin+imagenes"
-              className="event-carousel-img"
+            <Result
+                icon={<SmileOutlined />}
+                title="La portada no esta disponible"
             />
           </div>
         ) : (

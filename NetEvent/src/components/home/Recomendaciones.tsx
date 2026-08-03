@@ -111,13 +111,15 @@ const Recomendaciones: React.FC = () => {
     // No recomendar eventos del organizador (por si es organizer=participant)
     if (user && idOrg === user._id) return false;
 
+    if (!ev.estado) return false;
+
 
     // Debe compartir mínimo 1 tag
     return ev.tags.some((tag: string) => tagsUsuario.has(tag));
   });
 
   return (
-    <Card title="Recomendaciones">
+    <Card title="Recomendaciones" style={{backgroundColor: '#f3f3f3'}}>
       {recomendados.length === 0 ? (
         <p>No encontramos eventos basados en tus intereses.</p>
       ) : (
